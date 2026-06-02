@@ -12,6 +12,10 @@
 /package-lock.json
 /yarn.lock
 
+# pycharm env
+/.idea
+
+
 # Environment files
 /.env
 

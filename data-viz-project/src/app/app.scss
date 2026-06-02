@@ -1,0 +1,26 @@
+
+
+
+:host{
+  display: block;
+  height: 100%;
+   --top-padding-from-top-bar:  64px;
+}
+
+.sidenav{
+  background-color: lightgray;
+  margin-top: var(--top-padding-from-top-bar);
+  position: fixed;
+}
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+    margin-top: var(--top-padding-from-top-bar);
+}
+
+#SideNavButton{
+  position: fixed;
+  bottom: 30px;
+}
