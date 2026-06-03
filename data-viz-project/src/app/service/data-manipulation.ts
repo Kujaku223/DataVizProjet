@@ -34,4 +34,25 @@ export class DataManipulation {
       }
     )
   }
+
+  filterYear(year: number) {
+    /**
+     * Returns the happinessRecords filtered for a specific year
+     * 
+     * @param year - Year to keep in the records
+     * @returns Filtered copy of happinessRecords
+     */
+    return this.happinessRecords.filter(d => d.year == year);
+  }
+
+  filterYears(start: number, end?: number) {
+    /**
+     * Returns the happinessRecords filtered between [start, end[ or [start, ]
+     * 
+     * @param start - Included start year of the interval
+     * @param end - Excluded end year of the interval, if specified
+     * @returns Filtered copy of happinessRecords
+     */
+    return end ? this.happinessRecords.filter(d => d.year >= start && d.year < end) : this.happinessRecords.filter(d => d.year >= start);
+  }
 }

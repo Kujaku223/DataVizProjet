@@ -12,6 +12,7 @@ export class MainPage {
 
   ngOnInit() {
     // for testing purposes
-    console.log(this.dataManipulationService.happinessRecords)
+    console.log(this.dataManipulationService.filterYear(2024))
+    console.log(this.dataManipulationService.filterYears(2019, 2023))
   }
 }
