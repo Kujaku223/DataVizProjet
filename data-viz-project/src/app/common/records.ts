@@ -2,6 +2,7 @@ export interface HappinessRecord {
     year: number;
     rank: number;
     country: string;
+    continent: string;
     lifeEvaluation: number;
     lowerWhisker: number;
     upperWhisker: number;

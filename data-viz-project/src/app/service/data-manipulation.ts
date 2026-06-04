@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HappinessRecord } from '../common/records';
 import { HttpClient } from '@angular/common/http';
+import { COUNTRIES_CONTINENT } from '../common/constants'
+import clm from 'country-locale-map';
 
 @Injectable({
   providedIn: 'root',
@@ -14,10 +16,13 @@ export class DataManipulation {
         const csvRows: string[] = data.split('\n')
         for (let i=1; i < csvRows.length; i++) {
           const elements = csvRows[i].split(',');
+          const country = clm.getCountryByName(elements[2])
+  
           const happinessRecord: HappinessRecord = {
             year: parseInt(elements[0], 10),
             rank: parseInt(elements[1], 10),
             country: elements[2],
+            continent: country ? country.continent: COUNTRIES_CONTINENT[elements[2]],
             lifeEvaluation: parseFloat(elements[3]),
             lowerWhisker: parseFloat(elements[4]),
             upperWhisker: parseFloat(elements[5]),
