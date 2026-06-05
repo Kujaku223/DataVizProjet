@@ -40,30 +40,55 @@ private createChart() {
       .attr('width', this.width)
       .attr('height', this.height);
 
-    this.setXAxis(svg);
-    this.setYAxis(svg);
+    const [xScale, yScale] = this.setAxis(svg);
+
+    const groupedCountries: d3.InternMap<string, HappinessRecord[]> = d3.group(this.happinessRecords, d => d.country);
+    const lineGenerator = d3.line<HappinessRecord>()
+      .x(d => xScale(d.year))
+      .y(d => yScale(d.lifeEvaluation))
+      .curve(d3.curveMonotoneX);
+
+    svg.selectAll('.line')
+      .data(groupedCountries)
+      .join('path')
+      .attr('fill', 'none')
+      .attr('stroke', '#808080')
+      .attr('stroke-width', 1.5)
+      .attr('d', ([countryName, happinessRecord]) => lineGenerator(happinessRecord))
   }
 
-  private setXAxis(svg: d3.Selection<any, unknown, null, undefined>) {
-    svg.append('g')
+  private setAxis(svg: any) {
+    const axisGroup = svg.append('g')
+      .attr('id', 'axis');
+
+    const xScale = this.setXScale();
+    const yScale = this.setYScale();
+    this.setXAxis(axisGroup, xScale);
+    this.setYAxis(axisGroup, yScale);
+
+    return [xScale, yScale];
+  }
+
+  private setXAxis(g: any, xScale: any) {
+    g.append('g')
       .attr('class', 'x axis')
       .attr('transform', `translate(0, ${this.height - this.margin.bottom})`)
-      .call(d3.axisBottom(this.setXScale()).ticks(10, '.0f'));
+      .call(d3.axisBottom(xScale).ticks(10, '.0f'));
   
-    svg.append('text')
+    g.append('text')
       .text('Year')
       .attr('class', 'x axis-text')
       .attr('x', this.width / 2)
       .attr('y', this.height)
   }
 
-  private setYAxis(svg: d3.Selection<any, unknown, null, undefined>) {
-    svg.append('g')
+  private setYAxis(g: any, yScale: any) {
+    g.append('g')
       .attr('class', 'y axis')
       .attr('transform', `translate(${this.margin.left}, 0)`)
-      .call(d3.axisLeft(this.setYScale()).ticks(20, ".3f"))
+      .call(d3.axisLeft(yScale).ticks(20, ".3f"))
 
-    svg.append('text')
+    g.append('text')
       .text('Life Evaluation')
       .attr('class', 'y axis-text')
       .attr('transform', 'rotate(-90)')
