@@ -22,7 +22,7 @@ export class DataManipulation {
             year: parseInt(elements[0], 10),
             rank: parseInt(elements[1], 10),
             country: elements[2],
-            continent: country ? country.continent: COUNTRIES_CONTINENT[elements[2]],
+            continent: country && country.continent ? country.continent: COUNTRIES_CONTINENT[elements[2]],
             lifeEvaluation: parseFloat(elements[3]),
             lowerWhisker: parseFloat(elements[4]),
             upperWhisker: parseFloat(elements[5]),
