@@ -7,3 +7,6 @@ export const COUNTRIES_CONTINENT: Record<string, string> = {
 
 export const TOP_10_COUNTRIES_2025: string[] = ['Finland', 'Iceland', 'Denmark', 'Costa Rica', 'Sweden', 'Norway', 'Netherlands', 'Israel', 'Luxembourg', 'Switzerland']
 export const BOTTOM_10_COUNTRIES_2025: string[] = ['Tanzania', 'Egypt', 'DR Congo', 'Lebanon', 'Yemen', 'Botswana', 'Zimbabwe', 'Malawi', 'Sierra Leone', 'Afghanistan']
+
+// Happiness Line Chart
+export const LIFE_EVALUATION_DOMAIN = [1.0, 8.0]
