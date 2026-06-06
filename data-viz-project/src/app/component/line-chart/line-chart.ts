@@ -2,7 +2,7 @@ import {afterNextRender, Component, ElementRef, inject, viewChild} from '@angula
 import {DataManipulation} from '../../service/data-manipulation';
 import * as d3 from 'd3';
 import { HappinessRecord } from '../../common/records';
-import { LIFE_EVALUATION_DOMAIN } from '../../common/constants';
+import { BOTTOM_10_COUNTRIES_2025, LIFE_EVALUATION_DOMAIN, TOP_10_COUNTRIES_2025 } from '../../common/constants';
 
 @Component({
   selector: 'app-line-chart',
@@ -26,7 +26,6 @@ export class LineChart {
     });
   }
 
-
 private createChart() {
     // https://kkirtigoel01.medium.com/mastering-data-visualization-best-practices-with-d3-js-and-angular-3687531cb88f
     const element = this.chartContainer()?.nativeElement;
@@ -48,11 +47,16 @@ private createChart() {
       .y(d => yScale(d.lifeEvaluation))
       .curve(d3.curveMonotoneX);
 
-    svg.selectAll('.line')
+    const countryLines = svg.append('g')
+      .attr('id', 'countryLines')
+      .selectAll('g')
       .data(groupedCountries)
-      .join('path')
+      .join('g')
+      .attr('id', ([countryName, happinessRecord]) => countryName)
+
+    countryLines.append('path')
       .attr('fill', 'none')
-      .attr('stroke', '#808080')
+      .attr('stroke', ([countryName, happinessRecord]) => this.countryStroke(countryName))
       .attr('stroke-width', 1.5)
       .attr('d', ([countryName, happinessRecord]) => lineGenerator(happinessRecord))
   }
@@ -108,5 +112,16 @@ private createChart() {
     return d3.scaleLinear()
       .domain(LIFE_EVALUATION_DOMAIN)
       .range([this.height - this.margin.bottom, this.margin.top]);
+  }
+
+  private countryStroke(countryName: string): string {
+    if (countryName == 'Canada')
+      return '#FF0000';
+    else if (TOP_10_COUNTRIES_2025.includes(countryName))
+      return '#1874ed';
+    else if (BOTTOM_10_COUNTRIES_2025.includes(countryName))
+      return '#FFA500';
+
+    return 'grey'
   }
 }
