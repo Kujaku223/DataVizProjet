@@ -14,7 +14,6 @@ export class StackedBarChart {
 
   constructor() {
     // Ensure D3 only manipulates the DOM on the browser
-    console.log("ccc");
     afterNextRender(() => {
       this.createChart();
     });

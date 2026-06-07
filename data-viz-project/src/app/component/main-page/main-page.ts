@@ -11,12 +11,4 @@ import {PolarCharts} from '../polar-charts/polar-charts';
   templateUrl: './main-page.html',
   styleUrl: './main-page.scss',
 })
-export class MainPage {
-  private dataManipulationService = inject(DataManipulation)
-
-  ngOnInit() {
-    // for testing purposes
-    console.log(this.dataManipulationService.filterYear(2024))
-    console.log(this.dataManipulationService.filterYears(2019, 2023))
-  }
-}
+export class MainPage {}
