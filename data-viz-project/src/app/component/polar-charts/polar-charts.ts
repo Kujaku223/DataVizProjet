@@ -33,7 +33,9 @@ export class PolarCharts {
     // https://d3-graph-gallery.com/spider.html
     // https://observablehq.com/@observablehq/plot-radar-chart
 
-    // TODO: Read from CSV
+    // TODO: Read from DataManipulation
+    this.dataManipulationService.getExtremum10(2025, isTop10);
+
     const data = isTop10
       ? [{ color: 'blue', values: [0.8, 0.9, 0.6, 0.8, 0.9] }]
       : [{ color: 'red', values: [0.5, 0.7, 0.1, 0.4, 0.6] }];
