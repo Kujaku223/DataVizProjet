@@ -2,10 +2,13 @@ import { Component, inject, OnDestroy, OnInit, output } from '@angular/core';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {FormBuilder, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
+import { MatIconModule } from '@angular/material/icon';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatButtonModule} from '@angular/material/button';
 
 @Component({
   selector: 'app-continent-filter',
-  imports: [MatCheckboxModule, ReactiveFormsModule, FormsModule],
+  imports: [MatCheckboxModule, ReactiveFormsModule, FormsModule, MatButtonModule, MatMenuModule, MatIconModule],
   templateUrl: './continent-filter.html',
   styleUrl: './continent-filter.scss',
 })

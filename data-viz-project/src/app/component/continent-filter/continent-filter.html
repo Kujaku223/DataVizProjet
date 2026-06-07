@@ -1,7 +1,15 @@
-<section class="continent-filters" [formGroup]="continents">
-    <p><mat-checkbox formControlName="Americas">Americas</mat-checkbox></p>
-    <p><mat-checkbox formControlName="Europe">Europe</mat-checkbox></p>
-    <p><mat-checkbox formControlName="Asia">Asia</mat-checkbox></p>
-    <p><mat-checkbox formControlName="Africa">Africa</mat-checkbox></p>
-    <p><mat-checkbox formControlName="Oceania">Oceania</mat-checkbox></p>
-</section>
+<button mat-button class="btn" [matMenuTriggerFor]="menu">
+    <div class="icon-text">
+        <mat-icon fontSet="material-icons-outlined">filter_alt</mat-icon>
+        <span>Continents</span>
+    </div>
+</button>
+<mat-menu #menu class="continent-filters" [formGroup]="continents">
+    <div (click)="$event.stopPropagation();"> <!-- prevents menu from instantly closing when clicking on checkbox -->
+        <p><mat-checkbox formControlName="Americas">Americas</mat-checkbox></p>
+        <p><mat-checkbox formControlName="Europe">Europe</mat-checkbox></p>
+        <p><mat-checkbox formControlName="Asia">Asia</mat-checkbox></p>
+        <p><mat-checkbox formControlName="Africa">Africa</mat-checkbox></p>
+        <p><mat-checkbox formControlName="Oceania">Oceania</mat-checkbox></p>
+    </div>
+</mat-menu>
