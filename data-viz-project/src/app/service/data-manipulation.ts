@@ -66,7 +66,35 @@ export class DataManipulation {
     const sortedData = this.filterYear(year).sort(
       (countryA, countryB) => countryA.lifeEvaluation - countryB.lifeEvaluation,
     );
-    console.log(isTop10 ? sortedData.slice(-10) : sortedData.slice(0, 10));
     return isTop10 ? sortedData.slice(-10) : sortedData.slice(0, 10);
+  }
+
+  getNormalizedValues(data: HappinessRecord[], attribute: keyof HappinessRecord) {
+    // TODO
+  }
+
+  getAverageValue(data: HappinessRecord[], attribute: keyof HappinessRecord) {
+    // REFERENCE: https://stackoverflow.com/questions/29544371/finding-the-average-of-an-array-using-js
+    return (
+      data.reduce((acc, country: HappinessRecord) => acc + Number(country[attribute]), 0) /
+      data.length
+    );
+  }
+
+  getExtremum10Stats(year: number, isTop10: Boolean) {
+    const extremum10 = this.getExtremum10(year, isTop10);
+    console.log(extremum10);
+
+    // TODO: getNormalizedValues
+
+    const averages = [
+      this.getAverageValue(extremum10, 'GDP'),
+      this.getAverageValue(extremum10, 'socialSupport'),
+      this.getAverageValue(extremum10, 'freedom'),
+      this.getAverageValue(extremum10, 'lifeExpectancy'),
+      this.getAverageValue(extremum10, 'corruptionPerception'),
+    ];
+
+    return averages;
   }
 }

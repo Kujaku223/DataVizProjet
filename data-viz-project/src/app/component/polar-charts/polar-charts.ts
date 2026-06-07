@@ -34,15 +34,14 @@ export class PolarCharts {
     // https://observablehq.com/@observablehq/plot-radar-chart
 
     // TODO: Read from DataManipulation
-    this.dataManipulationService.getExtremum10(2025, isTop10);
+    const values = this.dataManipulationService.getExtremum10Stats(2025, isTop10);
+    console.log(values);
 
-    const data = isTop10
-      ? [{ color: 'blue', values: [0.8, 0.9, 0.6, 0.8, 0.9] }]
-      : [{ color: 'red', values: [0.5, 0.7, 0.1, 0.4, 0.6] }];
+    const data = isTop10 ? [{ color: 'blue', values: values }] : [{ color: 'red', values: values }];
 
     const svg = d3.select(element).attr('class', 'polar-chart');
 
-    const maxValue = 1;
+    const maxValue = 2;
     const radius = 150;
     const center = { x: 250, y: 200 };
 
@@ -60,7 +59,7 @@ export class PolarCharts {
     }
 
     const labels = [
-      'PIB',
+      'GDP',
       'Social support',
       'Freedom',
       'Healthy life expectancy',
