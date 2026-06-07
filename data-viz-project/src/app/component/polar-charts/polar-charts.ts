@@ -11,23 +11,29 @@ import * as d3 from 'd3';
 export class PolarCharts {
   private dataManipulationService = inject(DataManipulation);
 
-  private chartContainer = viewChild<ElementRef>('polarChartContainer');
+  private chartContainerTop10 = viewChild<ElementRef>('polarChartContainerTop10');
+  private chartContainerBottom10 = viewChild<ElementRef>('polarChartContainerBottom10');
 
   constructor() {
     // Ensure D3 only manipulates the DOM on the browser
     afterNextRender(() => {
-      this.createChart();
+      this.createChart(true);
+      this.createChart(false);
     });
   }
 
-  private createChart() {
-    const element = this.chartContainer()?.nativeElement;
+  private createChart(isTop10: Boolean) {
+    const element = isTop10
+      ? this.chartContainerTop10()?.nativeElement
+      : this.chartContainerBottom10()?.nativeElement;
     if (!element) return;
 
     // Based on: https://stackoverflow.com/questions/67463864/javascript-d3-plotting-radar-graph
 
     // TODO: Read from CSV
-    const data = [{ color: 'red', values: [0.5, 0.7, 0.1, 0.4, 0.6] }];
+    const data = isTop10
+      ? [{ color: 'red', values: [0.5, 0.7, 0.1, 0.4, 0.6] }]
+      : [{ color: 'blue', values: [0.8, 0.9, 0.6, 0.8, 0.9] }];
 
     const svg = d3.select(element).attr('class', 'polar-chart');
 
@@ -68,7 +74,7 @@ export class PolarCharts {
       { x: 10, y: -15 },
       { x: 60, y: 25 },
       { x: -120, y: 25 },
-      { x: -120, y: -15 },
+      { x: -80, y: -15 },
     ];
 
     for (let index = 0; index < labels.length; index++) {
