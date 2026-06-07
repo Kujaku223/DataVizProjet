@@ -1,6 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, output } from '@angular/core';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {FormBuilder, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-continent-filter',
@@ -8,8 +9,22 @@ import {FormBuilder, FormsModule, ReactiveFormsModule} from '@angular/forms';
   templateUrl: './continent-filter.html',
   styleUrl: './continent-filter.scss',
 })
-export class ContinentFilter {
+export class ContinentFilter implements OnDestroy, OnInit {
+  private ngUnsubscribe = new Subject<void>();
   private readonly _formBuilder = inject(FormBuilder);
   readonly continents = this._formBuilder.group({ Americas: true, Europe: true, Oceania: true, Africa: true, Asia: true })
 
+  selectedContinents = output<string[]>();
+
+  ngOnInit() {
+    this.continents.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(continents => {
+      const selectedContinents = Object.entries(continents).filter(([continent, selected]) => selected).map(([continent, _]) => continent)
+      this.selectedContinents.emit(selectedContinents);
+    })
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
 }

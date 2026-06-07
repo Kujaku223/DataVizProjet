@@ -2,18 +2,19 @@ import {afterNextRender, Component, ElementRef, inject, viewChild} from '@angula
 import {DataManipulation} from '../../service/data-manipulation';
 import * as d3 from 'd3';
 import { HappinessRecord } from '../../common/records';
-import { BOTTOM_10_COUNTRIES_2025, LIFE_EVALUATION_DOMAIN, TOP_10_COUNTRIES_2025 } from '../../common/constants';
+import { BOTTOM_10_COUNTRIES_2025, LIFE_EVALUATION_DOMAIN, TOP_10_COUNTRIES_2025, CONTINENTS } from '../../common/constants';
+import { ContinentFilter } from '../continent-filter/continent-filter';
 
 @Component({
   selector: 'app-line-chart',
-  imports: [],
+  imports: [ContinentFilter],
   templateUrl: './line-chart.html',
   styleUrl: './line-chart.scss',
 })
 export class LineChart {
   private dataManipulationService = inject(DataManipulation);
   private chartContainer = viewChild<ElementRef>('chartContainer');
-  private width = 1200;
+  private width = 800;
   private height = 800;
   private margin = { top: 20, right: 30, bottom: 30, left: 60 };
   private happinessRecords: HappinessRecord[] = [];
@@ -22,26 +23,29 @@ export class LineChart {
   constructor() {
     afterNextRender(() => {
       this.happinessRecords = this.dataManipulationService.filterYears(2011);
-      this.createChart();
+      this.createChart(CONTINENTS);
     });
   }
 
-private createChart() {
+  public continentsChanged(continents: string[]) {
+    this.createChart(continents);
+  }
+
+  private createChart(selectedContinents: string[]) {
     // https://kkirtigoel01.medium.com/mastering-data-visualization-best-practices-with-d3-js-and-angular-3687531cb88f
     const element = this.chartContainer()?.nativeElement;
     if (!element)
         return 
 
-    // Clear any existing SVGs
-    d3.select(element).selectAll('svg').remove();
-
+    d3.select(element).selectAll('*').remove();
     const svg = d3.select(element)
       .attr('width', this.width)
       .attr('height', this.height);
-
     const [xScale, yScale] = this.setAxis(svg);
 
-    const groupedCountries: d3.InternMap<string, HappinessRecord[]> = d3.group(this.happinessRecords, d => d.country);
+    const filteredCountries = this.happinessRecords.filter(happinessRecord => selectedContinents.includes(happinessRecord.continent) || happinessRecord.country === 'Canada');
+    const groupedCountries: d3.InternMap<string, HappinessRecord[]> = d3.group(filteredCountries, d => d.country);
+
     const lineGenerator = d3.line<HappinessRecord>()
       .x(d => xScale(d.year))
       .y(d => yScale(d.lifeEvaluation))
