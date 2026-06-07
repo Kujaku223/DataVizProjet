@@ -28,12 +28,15 @@ export class PolarCharts {
       : this.chartContainerBottom10()?.nativeElement;
     if (!element) return;
 
-    // Based on: https://stackoverflow.com/questions/67463864/javascript-d3-plotting-radar-graph
+    // REFERENCE - Based on: https://stackoverflow.com/questions/67463864/javascript-d3-plotting-radar-graph
+    // Other references:
+    // https://d3-graph-gallery.com/spider.html
+    // https://observablehq.com/@observablehq/plot-radar-chart
 
     // TODO: Read from CSV
     const data = isTop10
-      ? [{ color: 'red', values: [0.5, 0.7, 0.1, 0.4, 0.6] }]
-      : [{ color: 'blue', values: [0.8, 0.9, 0.6, 0.8, 0.9] }];
+      ? [{ color: 'blue', values: [0.8, 0.9, 0.6, 0.8, 0.9] }]
+      : [{ color: 'red', values: [0.5, 0.7, 0.1, 0.4, 0.6] }];
 
     const svg = d3.select(element).attr('class', 'polar-chart');
 
@@ -42,13 +45,6 @@ export class PolarCharts {
     const center = { x: 250, y: 200 };
 
     const radialScale = d3.scaleLinear().domain([0, maxValue]).range([radius, 0]);
-
-    const axis = d3.axisRight(radialScale).ticks(5);
-
-    svg
-      .append('g')
-      .attr('transform', `translate(${center.x},${center.y - radius})`)
-      .call(axis);
 
     for (let val = 0; val <= maxValue; val += maxValue / 5) {
       const r = radialScale(val);
@@ -81,15 +77,15 @@ export class PolarCharts {
       const angle = (index * Math.PI * 2) / labels.length;
       const x = center.x + radius * Math.sin(angle);
       const y = center.y + radius * -Math.cos(angle);
-      if (angle > 0) {
-        svg
-          .append('line')
-          .attr('x1', center.x)
-          .attr('y1', center.y)
-          .attr('x2', x)
-          .attr('y2', y)
-          .style('stroke', '#000');
-      }
+
+      svg
+        .append('line')
+        .attr('x1', center.x)
+        .attr('y1', center.y)
+        .attr('x2', x)
+        .attr('y2', y)
+        .style('stroke', '#aaa');
+
       svg
         .append('text')
         .text(labels[index])
@@ -105,8 +101,6 @@ export class PolarCharts {
       let path = '';
       for (let i = 0; i < values.length; i++) {
         const r = radius - radialScale(values[i]);
-        console.log('V: ', values[i]);
-        console.log('R: ', r);
         const angle = (i * Math.PI * 2) / values.length;
         const x = center.x + r * Math.sin(angle);
         const y = center.y + r * -Math.cos(angle);
@@ -122,5 +116,15 @@ export class PolarCharts {
         .style('fill', color)
         .style('fill-opacity', 0.3);
     });
+
+    const axis = d3.axisRight(radialScale).ticks(5).tickSizeInner(0);
+
+    svg
+      .append('g')
+      .attr('transform', `translate(${center.x},${center.y - radius})`)
+      .call(axis);
+
+    svg.select('.domain').remove();
+    svg.selectAll('.tick line').remove();
   }
 }
