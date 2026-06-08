@@ -1,4 +1,4 @@
-import {afterNextRender, Component, ElementRef, inject, viewChild} from '@angular/core';
+import {afterNextRender, Component, ElementRef, inject, Input, viewChild} from '@angular/core';
 import {DataManipulation} from '../../service/data-manipulation';
 import * as d3 from 'd3';
 
@@ -9,8 +9,14 @@ import * as d3 from 'd3';
   styleUrl: './bee-swarm.scss',
 })
 export class BeeSwarm {
+
+  @Input({ required: true }) data!: any[];
   private dataManipulationService = inject(DataManipulation);
   private chartContainer = viewChild<ElementRef>('chartContainer');
+
+
+  // sources https://observablehq.com/@d3/beeswarm/2
+
 
   constructor() {
     // Ensure D3 only manipulates the DOM on the browser
@@ -25,13 +31,7 @@ export class BeeSwarm {
     if (!element) return;
 
     // Sample data
-    const data: { name: string; value: number }[] = [
-      {name: 'A', value: 30},
-      {name: 'A', value: 30.2},
-      {name: 'B', value: 60},
-      {name: 'C', value: 45},
-      {name: 'D', value: 80},
-    ];
+
 
 
     // Clear any existing SVGs
@@ -47,7 +47,7 @@ export class BeeSwarm {
 
     const x = d3.scaleLinear()
       .range([marginLeft, width - marginRight])
-      .domain(d3.extent(data, (d: any) => d["value"]) as any)
+      .domain(d3.extent(this.data, (d: any) => d["value"]) as any)
       ;
 
     // Create the SVG container
@@ -59,7 +59,7 @@ export class BeeSwarm {
 
     svg.append("g")
       .selectAll()
-      .data(this.dodge(data, {radius: radius * 2 + padding, x: d => x(d["value"])}))
+      .data(this.dodge(this.data, {radius: radius * 2 + padding, x: d => x(d["value"])}))
       .join("circle")
       .attr("cx", (d:any) => d.x)
       .attr("cy", d => height - marginBottom - radius - padding - (d as any).y)
@@ -68,6 +68,9 @@ export class BeeSwarm {
       .text((d: any) => d.data.name);
 
   }
+
+
+
 
 
   dodge(data: any[], {radius = 1, x = (d: any, i: number, data: any[]) => d} = {}) {

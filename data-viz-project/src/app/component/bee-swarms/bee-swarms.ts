@@ -11,4 +11,9 @@ import {BeeSwarm} from '../bee-swarm/bee-swarm';
 export class BeeSwarms {
   private dataManipulationService = inject(DataManipulation)
 
+  public data: { name: string; value: number }[] = this.dataManipulationService.filterYear(2023)
+    .map((d: any) => ({
+      name: d.country,
+      value: d.corruptionPerception,
+    }));
 }
