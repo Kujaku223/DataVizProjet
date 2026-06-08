@@ -7,3 +7,20 @@
 mat-toolbar{
   background-color: red;
 }
+mat-toolbar {
+  height: 70px;
+}
+
+.title {
+  margin-left: 15px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+button[mat-button] {
+  margin-left: 10px;
+}
