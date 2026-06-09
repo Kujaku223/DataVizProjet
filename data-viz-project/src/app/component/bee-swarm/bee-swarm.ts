@@ -29,12 +29,8 @@ export class BeeSwarm {
     const element = this.chartContainer()?.nativeElement;
     if (!element) return;
 
-    // Sample data
-
-
-
-    // Clear any existing SVGs
     d3.select(element).selectAll('svg').remove();
+
     const width = 300;
     const height = 160;
     const marginTop = 20;
@@ -56,6 +52,7 @@ export class BeeSwarm {
       .attr("transform", `translate(0,${height - marginBottom})`)
       .call(d3.axisBottom(x).tickSizeOuter(0));
 
+
     svg.append("g")
       .selectAll()
       .data(this.dodge(this.data, {radius: radius * 2 + padding, x: d => x(d["value"])}))
@@ -64,10 +61,23 @@ export class BeeSwarm {
       .attr("cy", d => height - marginBottom - radius - padding - (d as any).y)
       .attr("r", radius)
       .attr("fill", (d:any)=> this.dataManipulationService.getColorFromCountryName(d.data.name))
+      .attr("class", "point")
       .append("title")
       .text((d: any) => d.data.name);
 
+      d3.selectAll(".point")
+    .on("mouseover", (event, d) => {
+      d3.select(event.target).transition().duration(200).attr("r", 4);
+    })
+    .on("mouseout", (event, d) => {
+      d3.select(event.target).transition().duration(200).attr("r", radius);
+    }).on("click", (event, d: any) =>{console.log(d.data)});
   }
+
+
+  //////////////////////////////////////////////////////////
+  // Dodging logic
+  /////////////////////////////////////////////////////////
 
   dodge(data: any[], {radius = 1, x = (d: any, i: number, data: any[]) => d} = {}) {
     const radius2 = radius ** 2;
