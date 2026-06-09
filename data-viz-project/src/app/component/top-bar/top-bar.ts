@@ -6,14 +6,6 @@ import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-top-bar',
-  imports: [MatToolbarModule],
-  templateUrl: './top-bar.html',
-  styleUrl: './top-bar.scss',
-})
-
-
-@Component({
-  selector: 'app-top-bar',
   standalone: true,
   imports: [
     MatToolbarModule,
