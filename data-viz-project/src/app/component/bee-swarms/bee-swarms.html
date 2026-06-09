@@ -1,2 +1,9 @@
 <h1>Bee Swarms</h1>
-<app-bee-swarm [data]="data"></app-bee-swarm>
+<div class="bee-swarms-grid">
+  @for (beeSwarm of beeSwarms; track beeSwarm.label) {
+    <div class="swarm-item">
+      <h3>{{ beeSwarm.label }}</h3>
+      <app-bee-swarm [data]="beeSwarm.data"></app-bee-swarm>
+    </div>
+  }
+</div>

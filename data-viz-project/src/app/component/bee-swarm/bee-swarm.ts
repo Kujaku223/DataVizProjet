@@ -13,8 +13,7 @@ export class BeeSwarm {
   @Input({ required: true }) data!: any[];
   private dataManipulationService = inject(DataManipulation);
   private chartContainer = viewChild<ElementRef>('chartContainer');
-
-
+  
   // sources https://observablehq.com/@d3/beeswarm/2
 
 
