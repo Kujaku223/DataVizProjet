@@ -66,7 +66,7 @@ export class LineChart {
 
     countryLines.append('path')
       .attr('fill', 'none')
-      .attr('stroke', ([countryName, happinessRecord]) => this.countryStroke(countryName))
+      .attr('stroke', ([countryName, happinessRecord]) => this.dataManipulationService.getColorFromCountryName(countryName))
       .attr('stroke-width', 1.5)
       .attr('d', ([countryName, happinessRecord]) => lineGenerator(happinessRecord))
   }
@@ -122,16 +122,5 @@ export class LineChart {
     return d3.scaleLinear()
       .domain(LIFE_EVALUATION_DOMAIN)
       .range([this.height - this.margin.bottom, this.margin.top]);
-  }
-
-  private countryStroke(countryName: string): string {
-    if (countryName == 'Canada')
-      return CANADA_COLOR;
-    else if (TOP_10_COUNTRIES_2025.includes(countryName))
-      return TOP_10_COLOR;
-    else if (BOTTOM_10_COUNTRIES_2025.includes(countryName))
-      return BOTTOM_10_COLOR;
-
-    return OTHER_COLOR
   }
 }

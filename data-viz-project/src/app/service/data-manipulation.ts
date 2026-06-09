@@ -1,7 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HappinessRecord } from '../common/records';
 import { HttpClient } from '@angular/common/http';
-import { COUNTRIES_CONTINENT } from '../common/constants';
+import {
+  BOTTOM_10_COLOR,
+  BOTTOM_10_COUNTRIES_2025,
+  CANADA_COLOR,
+  COUNTRIES_CONTINENT, OTHER_COLOR,
+  TOP_10_COLOR,
+  TOP_10_COUNTRIES_2025
+} from '../common/constants';
 import clm from 'country-locale-map';
 
 @Injectable({
@@ -96,5 +103,16 @@ export class DataManipulation {
     ];
 
     return averages;
+  }
+
+  getColorFromCountryName(countryName: string): string{
+    if (countryName == 'Canada')
+      return CANADA_COLOR;
+    else if (TOP_10_COUNTRIES_2025.includes(countryName))
+      return TOP_10_COLOR;
+    else if (BOTTOM_10_COUNTRIES_2025.includes(countryName))
+      return BOTTOM_10_COLOR;
+
+    return OTHER_COLOR
   }
 }
