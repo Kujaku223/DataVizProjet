@@ -2,7 +2,13 @@ import {afterNextRender, Component, ElementRef, inject, viewChild} from '@angula
 import {DataManipulation} from '../../service/data-manipulation';
 import * as d3 from 'd3';
 import { HappinessRecord } from '../../common/records';
-import { BOTTOM_10_COUNTRIES_2025, LIFE_EVALUATION_DOMAIN, TOP_10_COUNTRIES_2025, CONTINENTS } from '../../common/constants';
+import {
+  BOTTOM_10_COUNTRIES_2025,
+  LIFE_EVALUATION_DOMAIN,
+  TOP_10_COUNTRIES_2025,
+  CONTINENTS,
+  CANADA_COLOR, TOP_10_COLOR, BOTTOM_10_COLOR, OTHER_COLOR
+} from '../../common/constants';
 import { ContinentFilter } from '../continent-filter/continent-filter';
 
 @Component({
@@ -35,7 +41,7 @@ export class LineChart {
     // https://kkirtigoel01.medium.com/mastering-data-visualization-best-practices-with-d3-js-and-angular-3687531cb88f
     const element = this.chartContainer()?.nativeElement;
     if (!element)
-        return 
+        return
 
     d3.select(element).selectAll('*').remove();
     const svg = d3.select(element)
@@ -82,7 +88,7 @@ export class LineChart {
       .attr('class', 'x axis')
       .attr('transform', `translate(0, ${this.height - this.margin.bottom})`)
       .call(d3.axisBottom(xScale).ticks(10, '.0f'));
-  
+
     g.append('text')
       .text('Year')
       .attr('class', 'x axis-text')
@@ -120,12 +126,12 @@ export class LineChart {
 
   private countryStroke(countryName: string): string {
     if (countryName == 'Canada')
-      return '#FF0000';
+      return CANADA_COLOR;
     else if (TOP_10_COUNTRIES_2025.includes(countryName))
-      return '#1874ed';
+      return TOP_10_COLOR;
     else if (BOTTOM_10_COUNTRIES_2025.includes(countryName))
-      return '#FFA500';
+      return BOTTOM_10_COLOR;
 
-    return 'grey'
+    return OTHER_COLOR
   }
 }

@@ -18,3 +18,8 @@ export const CONTINENTS: string[] = ['Europe', 'Americas', 'Asia', 'Africa', 'Oc
 
 // Happiness Line Chart
 export const LIFE_EVALUATION_DOMAIN = [1.0, 8.0];
+
+export const CANADA_COLOR = '#FF0000';
+export const TOP_10_COLOR = '#1874ed';
+export const BOTTOM_10_COLOR = '#FFA500';
+export const OTHER_COLOR = 'grey';
