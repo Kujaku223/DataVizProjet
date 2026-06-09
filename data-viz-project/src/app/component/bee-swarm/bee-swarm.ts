@@ -13,7 +13,7 @@ export class BeeSwarm {
   @Input({ required: true }) data!: any[];
   private dataManipulationService = inject(DataManipulation);
   private chartContainer = viewChild<ElementRef>('chartContainer');
-  
+
   // sources https://observablehq.com/@d3/beeswarm/2
 
 
@@ -63,14 +63,11 @@ export class BeeSwarm {
       .attr("cx", (d:any) => d.x)
       .attr("cy", d => height - marginBottom - radius - padding - (d as any).y)
       .attr("r", radius)
+      .attr("fill", (d:any)=> this.dataManipulationService.getColorFromCountryName(d.data.name))
       .append("title")
       .text((d: any) => d.data.name);
 
   }
-
-
-
-
 
   dodge(data: any[], {radius = 1, x = (d: any, i: number, data: any[]) => d} = {}) {
     const radius2 = radius ** 2;

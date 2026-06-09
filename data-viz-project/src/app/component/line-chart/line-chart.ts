@@ -66,7 +66,7 @@ export class LineChart {
 
     countryLines.append('path')
       .attr('fill', 'none')
-      .attr('stroke', ([countryName, happinessRecord]) => this.dataManipulationService.getColorFromCountryName(countryName))
+      // .attr('stroke', ([countryName, happinessRecord]) => this.dataManipulationService.getColorFromCountryName(countryName))
       .attr('stroke-width', 1.5)
       .attr('d', ([countryName, happinessRecord]) => lineGenerator(happinessRecord))
   }
