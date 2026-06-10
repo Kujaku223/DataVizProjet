@@ -1,4 +1,10 @@
 .bee-swarms-grid {
-    display: flex;
-    flex-wrap: space-between;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.bee-swarms-grid app-bee-swarm {
+  min-height: 250px;
+  display: block;
 }

@@ -32,7 +32,7 @@ export class BeeSwarm {
     d3.select(element).selectAll('svg').remove();
 
     const width = 300;
-    const height = 160;
+    const height = 170;
     const marginTop = 20;
     const marginRight = 20;
     const marginBottom = 40;
@@ -42,12 +42,15 @@ export class BeeSwarm {
 
     const x = d3.scaleLinear()
       .range([marginLeft, width - marginRight])
-      .domain(d3.extent(this.data, (d: any) => d["value"]) as any)
-      ;
+      .domain(d3.extent(this.data, (d: any) => d["value"]) as any);
 
     // Create the SVG container
-    const svg = d3.select(element).append('svg').attr('width', width).attr('height', height);
-
+    const svg = d3.select(element)
+    .append('svg')
+    .attr('width', '100%')
+    .attr('height', height)
+    .attr('viewBox', `0 0 ${width} ${height}`)
+    .attr('preserveAspectRatio', 'xMidYMid meet');
     svg.append("g")
       .attr("transform", `translate(0,${height - marginBottom})`)
       .call(d3.axisBottom(x).tickSizeOuter(0));
@@ -65,13 +68,18 @@ export class BeeSwarm {
       .append("title")
       .text((d: any) => d.data.name);
 
-      d3.selectAll(".point")
-    .on("mouseover", (event, d) => {
+    d3.selectAll(".point")
+    .on("mouseover", (event) => {
       d3.select(event.target).transition().duration(200).attr("r", 4);
     })
-    .on("mouseout", (event, d) => {
+    .on("mouseout", (event) => {
       d3.select(event.target).transition().duration(200).attr("r", radius);
-    }).on("click", (event, d: any) =>{console.log(d.data)});
+    })
+    .on("click", (event, d: any) => {
+      const color = this.dataManipulationService.getColorFromCountryName(d.data.name);
+      this.displayPanel(d.data, color, event);
+    });
+
   }
 
 
@@ -120,7 +128,54 @@ export class BeeSwarm {
     else tail = tail.next = b;
   }
 
-  return circles;
+    return circles;
+  }
+  //////////////////////////////////////////////////////////
+  // Panel logic
+  /////////////////////////////////////////////////////////
+ private displayPanel(d: any, color: string, event?: any) {
+  const panel = d3.select('#panel');
+
+  panel
+    .style('visibility', 'visible')
+    .style('left', `${event.pageX + 10}px`)
+    .style('top', `${event.pageY + 10}px`)
+    .style('border', `2px solid ${color}`)
+    .html('');
+
+  const header = panel
+    .append('div')
+    .style('display', 'flex')
+    .style('justify-content', 'flex-end');
+
+  header
+    .append('div')
+    .style('cursor', 'pointer')
+    .style('font-size', '12px')
+    .style('color', '#666')
+    .style('line-height', '1')
+    .style('user-select', 'none')
+    .text('✕')
+    .on('click', () => panel.style('visibility', 'hidden'));
+
+  panel
+    .append('div')
+    .style('text-align', 'left')
+    .style('font-weight', 'bold')
+    .style('font-size', '22px')
+    .style('color', color)
+    .style('margin-top', '4px')
+    .text(d.name);
+
+  panel
+    .append('div')
+    .style('text-align', 'left')
+    .style('margin-top', '8px')
+    .style('font-size', '14px')
+    .text(`Value: ${d.value}`);
+  }
+  
+
 }
-}
+
 
