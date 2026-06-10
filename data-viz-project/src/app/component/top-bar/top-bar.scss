@@ -1,19 +1,18 @@
-:host{
+:host {
   position: fixed;
   top: 0px;
   z-index: 5;
   width: 100%;
 }
-mat-toolbar{
-  background-color: red;
-}
 mat-toolbar {
+  background-color: white;
   height: 70px;
+  box-shadow: 0 4px 2px -2px rgb(204, 204, 204);
 }
 
 .title {
   margin-left: 15px;
-  font-size: 22px;
+  font-size: 1.25rem;
   font-weight: 600;
 }
 

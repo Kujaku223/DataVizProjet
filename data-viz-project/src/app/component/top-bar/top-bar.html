@@ -1,10 +1,5 @@
-
-<mat-toolbar>allaAo</mat-toolbar>
-<mat-toolbar color="primary">
-
-  <button
-    mat-icon-button
-    (click)="toggleMenu()">
+<mat-toolbar>
+  <button mat-icon-button (click)="toggleMenu()">
     <mat-icon>menu</mat-icon>
   </button>
 
@@ -14,12 +9,9 @@
 
   <span class="spacer"></span>
 
-  @for(page of pages; track page.route) {
-    <button
-      mat-button
-      [routerLink]="page.route">
+  @for (page of pages; track page.route) {
+    <button mat-button [routerLink]="page.route">
       {{ page.name }}
     </button>
   }
-
 </mat-toolbar>
