@@ -59,6 +59,7 @@ export class PolarCharts {
     const labels = [
       'GDP',
       'Social support',
+      'Generosity',
       'Freedom',
       'Healthy life expectancy',
       'Perception of corruption',
@@ -68,6 +69,7 @@ export class PolarCharts {
       { x: 0, y: -15 },
       { x: 10, y: -15 },
       { x: 60, y: 25 },
+      { x: -30, y: 25 },
       { x: -120, y: 25 },
       { x: -80, y: -15 },
     ];
@@ -116,7 +118,7 @@ export class PolarCharts {
         .style('fill-opacity', 0.3);
     });
 
-    const axis = d3.axisRight(radialScale).ticks(5).tickSizeInner(0);
+    const axis = d3.axisRight(radialScale).ticks(values.length).tickSizeInner(0);
 
     svg
       .append('g')

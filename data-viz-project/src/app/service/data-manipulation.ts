@@ -116,6 +116,7 @@ export class DataManipulation {
       'GDP',
       'socialSupport',
       'freedom',
+      'generosity',
       'lifeExpectancy',
       'corruptionPerception',
     ]);
@@ -127,6 +128,7 @@ export class DataManipulation {
     const averages = [
       this.getAverageValue(extremum10, 'GDP'),
       this.getAverageValue(extremum10, 'socialSupport'),
+      this.getAverageValue(extremum10, 'generosity'),
       this.getAverageValue(extremum10, 'freedom'),
       this.getAverageValue(extremum10, 'lifeExpectancy'),
       this.getAverageValue(extremum10, 'corruptionPerception'),
