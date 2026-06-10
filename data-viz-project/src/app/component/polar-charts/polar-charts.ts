@@ -33,15 +33,13 @@ export class PolarCharts {
     // https://d3-graph-gallery.com/spider.html
     // https://observablehq.com/@observablehq/plot-radar-chart
 
-    // TODO: Read from DataManipulation
     const values = this.dataManipulationService.getExtremum10Stats(2025, isTop10);
-    console.log(values);
 
     const data = isTop10 ? [{ color: 'blue', values: values }] : [{ color: 'red', values: values }];
 
     const svg = d3.select(element).attr('class', 'polar-chart');
 
-    const maxValue = 2;
+    const maxValue = 1;
     const radius = 150;
     const center = { x: 250, y: 200 };
 

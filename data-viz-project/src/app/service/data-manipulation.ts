@@ -5,9 +5,10 @@ import {
   BOTTOM_10_COLOR,
   BOTTOM_10_COUNTRIES_2025,
   CANADA_COLOR,
-  COUNTRIES_CONTINENT, OTHER_COLOR,
+  COUNTRIES_CONTINENT,
+  OTHER_COLOR,
   TOP_10_COLOR,
-  TOP_10_COUNTRIES_2025
+  TOP_10_COUNTRIES_2025,
 } from '../common/constants';
 import clm from 'country-locale-map';
 
@@ -76,8 +77,25 @@ export class DataManipulation {
     return isTop10 ? sortedData.slice(-10) : sortedData.slice(0, 10);
   }
 
-  getNormalizedValues(data: HappinessRecord[], attribute: keyof HappinessRecord) {
-    // TODO
+  getNormalizedValues(data: HappinessRecord[], attributes: string[]) {
+    let updatedData = data;
+    attributes.forEach((stringAttribute: string) => {
+      const attribute = stringAttribute as keyof HappinessRecord;
+
+      const min = Math.min(...data.map((i: HappinessRecord) => Number(i[attribute])));
+      const max = Math.max(...data.map((i: HappinessRecord) => Number(i[attribute])));
+
+      updatedData = updatedData.map((item) => {
+        const normalizedValue = (Number(item[attribute]) - min) / (max - min);
+
+        let updatedItem = item;
+        (updatedItem as any)[attribute] = normalizedValue; // any is used here to prevent build "error" because of string-only properties like continent.
+
+        return updatedItem;
+      });
+    });
+
+    return updatedData;
   }
 
   getAverageValue(data: HappinessRecord[], attribute: keyof HappinessRecord) {
@@ -89,10 +107,22 @@ export class DataManipulation {
   }
 
   getExtremum10Stats(year: number, isTop10: Boolean) {
-    const extremum10 = this.getExtremum10(year, isTop10);
-    console.log(extremum10);
+    let extremum10 = this.getExtremum10(year, isTop10);
+    const antiExtremum10 = this.getExtremum10(year, !isTop10);
 
-    // TODO: getNormalizedValues
+    let combinedExtremums = extremum10.concat(antiExtremum10);
+
+    combinedExtremums = this.getNormalizedValues(combinedExtremums, [
+      'GDP',
+      'socialSupport',
+      'freedom',
+      'lifeExpectancy',
+      'corruptionPerception',
+    ]);
+
+    extremum10 = combinedExtremums.filter((country) =>
+      isTop10 ? country.rank <= 10 : country.rank > 10,
+    );
 
     const averages = [
       this.getAverageValue(extremum10, 'GDP'),
@@ -105,14 +135,11 @@ export class DataManipulation {
     return averages;
   }
 
-  getColorFromCountryName(countryName: string): string{
-    if (countryName == 'Canada')
-      return CANADA_COLOR;
-    else if (TOP_10_COUNTRIES_2025.includes(countryName))
-      return TOP_10_COLOR;
-    else if (BOTTOM_10_COUNTRIES_2025.includes(countryName))
-      return BOTTOM_10_COLOR;
+  getColorFromCountryName(countryName: string): string {
+    if (countryName == 'Canada') return CANADA_COLOR;
+    else if (TOP_10_COUNTRIES_2025.includes(countryName)) return TOP_10_COLOR;
+    else if (BOTTOM_10_COUNTRIES_2025.includes(countryName)) return BOTTOM_10_COLOR;
 
-    return OTHER_COLOR
+    return OTHER_COLOR;
   }
 }
