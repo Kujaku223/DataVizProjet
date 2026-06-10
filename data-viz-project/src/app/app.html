@@ -1,17 +1,5 @@
 <app-top-bar></app-top-bar>
 <mat-drawer-container class="page-container">
-  <mat-drawer #drawer class="sidenav" mode="side">
-    <p>Side Navigation</p>
-    <p>Go To viz 1 </p>
-    <p>Go To Viz 2 </p>
-  </mat-drawer>
-
-<!--  Actual content on the main page-->
-  <div id="SideNavButton">
-    <button type="button" matButton (click)="drawer.toggle()">
-      Toggle sidenav
-    </button>
-  </div>
   <app-main-page></app-main-page>
 
 </mat-drawer-container>
