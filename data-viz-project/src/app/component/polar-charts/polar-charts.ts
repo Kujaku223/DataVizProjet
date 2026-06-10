@@ -47,11 +47,23 @@ export class PolarCharts {
 
     for (let val = 0; val <= maxValue; val += maxValue / 5) {
       const r = radialScale(val);
+
+      // REFERENCE: https://stackoverflow.com/questions/67664726/rendering-hexagons-in-d3-js-in-the-wordmap
+      const hexagonPoints = (radius: number) => {
+        const halfWidth = (radius * Math.sqrt(3)) / 2;
+        return `
+        0,${-r}
+        ${halfWidth},${-r / 2}
+        ${halfWidth},${radius / 2}
+        0,${radius}
+        ${-halfWidth},${radius / 2}
+        ${-halfWidth},${-radius / 2}`;
+      };
+
       svg
-        .append('circle')
-        .attr('cx', center.x)
-        .attr('cy', center.y)
-        .attr('r', r)
+        .append('polygon')
+        .attr('points', hexagonPoints(r))
+        .attr('transform', 'translate(250, 200)') // 250 is center.x and 200 is center.y. Hard-coded values to simplify the syntax and because they are supposed to be static.
         .style('stroke', '#aaa')
         .style('fill', 'none');
     }
