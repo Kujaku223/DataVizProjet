@@ -27,21 +27,14 @@ export class TopBar {
   }
 
   pages = [
-    {
-      name: 'Line Chart',
-      route: '/line-chart'
-    },
-    {
-      name: 'Bar Chart',
-      route: '/bar-chart'
-    },
-    {
-      name: 'Radar Chart',
-      route: '/radar-chart'
-    },
-    {
-      name: 'Polar Chart',
-      route: '/polar-chart'
-    }
+    { name: 'Line Chart', anchor: 'line-chart' },
+    { name: 'Stacked Bar Chart', anchor: 'stacked-bar-chart' },
+    { name: 'Bar Charts', anchor: 'bar-charts' },
+    { name: 'Bee Swarms', anchor: 'bee-swarms' },
+    { name: 'Polar Chart', anchor: 'polar-chart' }
   ];
+
+  scrollTo(anchor: string) {
+    document.getElementById(anchor)?.scrollIntoView({ behavior: 'smooth' });
+  }
 }

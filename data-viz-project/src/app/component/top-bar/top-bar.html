@@ -9,8 +9,8 @@
 
   <span class="spacer"></span>
 
-  @for (page of pages; track page.route) {
-    <button mat-button [routerLink]="page.route">
+  @for (page of pages; track page.name) {
+    <button mat-button (click)="scrollTo(page.anchor)">
       {{ page.name }}
     </button>
   }
