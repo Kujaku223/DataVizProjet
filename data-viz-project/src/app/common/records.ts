@@ -14,3 +14,10 @@ export interface HappinessRecord {
     corruptionPerception: number;
     dystopia: number;
 }
+
+export interface HumanDevelopmentIndexRecord {
+    rank: number;
+    country: string;
+    humanDevelopmentIndex: number;
+    lifeExpectancy: number;
+}

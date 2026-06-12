@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HappinessRecord } from '../common/records';
+import { HappinessRecord, HumanDevelopmentIndexRecord } from '../common/records';
 import { HttpClient } from '@angular/common/http';
 import {
   BOTTOM_10_COLOR,
@@ -17,15 +17,31 @@ import clm from 'country-locale-map';
 })
 export class DataManipulation {
   public happinessRecords: HappinessRecord[] = [];
+  public humanDevelopmentIndex: HumanDevelopmentIndexRecord[] = [];
 
   constructor(private http: HttpClient) {
-    this.http.get('WHR26.csv', { responseType: 'text' }).subscribe((data) => {
-      const csvRows: string[] = data.split('\n');
-      for (let i = 1; i < csvRows.length; i++) {
-        const elements = csvRows[i].split(',');
+    this.loadHappinessData();
+    this.loadHDIData();
+  }
+
+  private loadCsv<T>(filePath: string, mapper: (row: string[]) => T, target: T[]): void {
+    this.http.get(filePath, { responseType: 'text' }).subscribe((data) => {
+      const rows = data.split('\n');
+
+      for (let i = 1; i < rows.length; i++) {
+        const elements = rows[i].split(',');
+        target.push(mapper(elements));
+      }
+    });
+  }
+  
+  private loadHappinessData(): void {
+    this.loadCsv<HappinessRecord>(
+      'WHR26.csv',
+      (elements) => {
         const country = clm.getCountryByName(elements[2]);
 
-        const happinessRecord: HappinessRecord = {
+        return {
           year: parseInt(elements[0], 10),
           rank: parseInt(elements[1], 10),
           country: elements[2],
@@ -42,9 +58,24 @@ export class DataManipulation {
           corruptionPerception: parseFloat(elements[11]),
           dystopia: parseFloat(elements[12]),
         };
-        this.happinessRecords.push(happinessRecord);
-      }
-    });
+      },
+      this.happinessRecords
+    );
+  }
+
+  private loadHDIData(): void {
+    this.loadCsv<HumanDevelopmentIndexRecord>(
+      'HDI_2023.csv',
+      (elements) => {
+        return {
+          rank: parseInt(elements[0]),
+          country: elements[1],
+          humanDevelopmentIndex: parseFloat(elements[2]),
+          lifeExpectancy: parseFloat(elements[3]),
+        };
+      },
+      this.humanDevelopmentIndex
+    );
   }
 
   filterYear(year: number) {
