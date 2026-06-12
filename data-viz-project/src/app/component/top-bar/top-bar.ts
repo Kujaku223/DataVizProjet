@@ -7,20 +7,14 @@ import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-top-bar',
   standalone: true,
-  imports: [
-    MatToolbarModule,
-    MatButtonModule,
-    MatIconModule,
-    RouterLink
-  ],
+  imports: [MatToolbarModule, MatButtonModule, MatIconModule, RouterLink],
   templateUrl: './top-bar.html',
-  styleUrl: './top-bar.scss'
+  styleUrl: './top-bar.scss',
 })
 export class TopBar {
-
   @Output() menuToggle = new EventEmitter<void>();
 
-  title = 'World Happiness Report';
+  title = 'La recette du bonheur';
 
   toggleMenu(): void {
     this.menuToggle.emit();
@@ -31,7 +25,7 @@ export class TopBar {
     { name: 'Stacked Bar Chart', anchor: 'stacked-bar-chart' },
     { name: 'Bar Charts', anchor: 'bar-charts' },
     { name: 'Bee Swarms', anchor: 'bee-swarms' },
-    { name: 'Polar Chart', anchor: 'polar-chart' }
+    { name: 'Radio Chart', anchor: 'polar-chart' },
   ];
 
   scrollTo(anchor: string) {
