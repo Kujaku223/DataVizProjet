@@ -68,6 +68,42 @@ export class PolarCharts {
         .style('fill', 'none');
     }
 
+    // REFERENCE: https://stackoverflow.com/questions/24784302/wrapping-text-in-d3
+    svg
+      .append('foreignObject')
+      .attr('width', '30rem')
+      .attr('height', '5rem')
+      .attr('x', '30')
+      .attr('y', 2.6 * radius)
+      .append('xhtml:div')
+      .attr('text-align', 'center')
+      .attr('width', '100%')
+      .attr('height', '100%')
+      .attr('overflow-y', 'auto')
+      .attr('overflow-x', 'auto')
+      .append('xhtml:h3')
+      .attr('font-size', '1rem')
+      .attr('font-weight', '600')
+      .attr('class', 'chart-title')
+      .html(
+        `Average normalized explanation factors for the 10 countries with the ${isTop10 ? 'highest' : 'lowest'} happiness scores in 2025`,
+      );
+
+    /*
+    svg
+      .append('text')
+      .attr('x', center.x)
+      .attr('y', 15)
+      .attr('text-anchor', 'middle')
+      .attr('font-size', '1rem')
+      .attr('width', '15rem')
+      .attr('text-align', 'center')
+      .attr('font-weight', '600')
+      .text(
+        `Average normalized explanation factors for the 10 countries with the ${isTop10 ? 'highest' : 'lowest'} happiness scores in 2025`,
+      );
+    */
+
     const labels = [
       'GDP',
       'Social support',
@@ -79,11 +115,11 @@ export class PolarCharts {
     const anchors = ['middle', 'start', 'end'];
     const shifts = [
       { x: 0, y: -15 },
-      { x: 10, y: -15 },
+      { x: 5, y: -15 },
       { x: 60, y: 25 },
       { x: -30, y: 25 },
       { x: -120, y: 25 },
-      { x: -80, y: -15 },
+      { x: -120, y: -15 },
     ];
 
     for (let index = 0; index < labels.length; index++) {
