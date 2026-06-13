@@ -13,7 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 export class TopBar {
   @Output() menuToggle = new EventEmitter<void>();
 
-  title = 'La recette du bonheur';
+  title = 'The Recipe for Happiness';
 
   toggleMenu(): void {
     this.menuToggle.emit();
