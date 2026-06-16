@@ -67,18 +67,17 @@ export class BeeSwarm {
       .attr("class", "point")
       .append("title")
       .text((d: any) => d.data.name);
+      
 
     d3.selectAll(".point")
-    .on("mouseover", (event) => {
-      d3.select(event.target).transition().duration(200).attr("r", 4);
+    .on("mouseover", (event, d: any) => {
+      // d3.select(event.target).transition().duration(200).attr("r", 4);
+      const color = this.dataManipulationService.getColorFromCountryName(d.data.name);
+      this.displayPanel(d.data, color, event);
     })
     .on("mouseout", (event) => {
       d3.select(event.target).transition().duration(200).attr("r", radius);
     })
-    .on("click", (event, d: any) => {
-      const color = this.dataManipulationService.getColorFromCountryName(d.data.name);
-      this.displayPanel(d.data, color, event);
-    });
 
   }
 
@@ -155,8 +154,6 @@ export class BeeSwarm {
     .style('color', '#666')
     .style('line-height', '1')
     .style('user-select', 'none')
-    .text('✕')
-    .on('click', () => panel.style('visibility', 'hidden'));
 
   panel
     .append('div')
