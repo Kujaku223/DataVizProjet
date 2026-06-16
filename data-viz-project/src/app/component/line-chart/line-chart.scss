@@ -4,3 +4,11 @@
     align-items: center;
     gap: 10px;
 }
+
+#lineChartPanel {
+  position: absolute;
+  background: white;
+  padding: 10px;
+  border-radius: 8px;
+  min-width: 150px;
+}

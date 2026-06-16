@@ -1,4 +1,5 @@
 <div class="container">
     <svg #chartContainer ></svg>
     <app-continent-filter ngSkipHydration (selectedContinents)="continentsChanged($event)"></app-continent-filter>
+    <div id="lineChartPanel" style="visibility:hidden; position:absolute;"></div>
 </div>
