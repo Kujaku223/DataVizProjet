@@ -63,12 +63,21 @@ export class LineChart {
       .attr('stroke', ([countryName, happinessRecord]) => this.dataManipulationService.getColorFromCountryName(countryName))
       .attr('stroke-width', 1.5)
       .attr('d', ([countryName, happinessRecord]) => lineGenerator(happinessRecord))
-      .on('mouseover', (event, d: any) => {
-        const [countryName, happinessRecords] = d
-        const color = this.dataManipulationService.getColorFromCountryName(countryName);
-        this.displayPanel(countryName, happinessRecords[0], color, event);
+      .on('mousemove', (event, [countryName, happinessRecords]) => {
+        const [mouseX, mouseY] = d3.pointer(event, svg.node());
+        const hoveredYear = Math.round(xScale.invert(mouseX));
+        const happinessRecord = happinessRecords.find(d => d.year === hoveredYear);
+
+        if (happinessRecord) {
+          const color = this.dataManipulationService.getColorFromCountryName(countryName);
+          this.displayPanel(countryName, happinessRecord, color, event);
+          d3.select(event.currentTarget).style('stroke-width', 4.5);
+          d3.select(event.currentTarget.parentNode).raise(); // the linePath is the child of a <g id=countryName> node, so we want to raise the parent
+        }
+
       })
       .on('mouseout', (event, d) => {
+        d3.select(event.currentTarget).style('stroke-width', 1.5);
         const panel = d3.select('#lineChartPanel');
         panel.style('visibility', 'hidden');
       })
@@ -79,8 +88,8 @@ export class LineChart {
 
     panel.style('visibility', 'visible')
       .style('border', `2px solid ${color}`)
-      .style('left', `${event.pageX + 10}px`)
-      .style('top', `${event.pageY + 10}px`)
+      .style('left', `${event.pageX}px`)
+      .style('top', `${event.pageY}px`)
       .html('');
 
     panel
@@ -90,7 +99,7 @@ export class LineChart {
       .style('font-size', '22px')
       .style('color', color)
       .style('margin-top', '4px')
-      .text(countryName);
+      .text(`${countryName} - ${happinessRecord.year}`);
 
     panel
       .append('div')
