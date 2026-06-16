@@ -1,14 +1,8 @@
-import {afterNextRender, Component, ElementRef, inject, viewChild} from '@angular/core';
-import {DataManipulation} from '../../service/data-manipulation';
+import { afterNextRender, Component, ElementRef, inject, viewChild } from '@angular/core';
+import { DataManipulation } from '../../service/data-manipulation';
 import * as d3 from 'd3';
 import { HappinessRecord } from '../../common/records';
-import {
-  BOTTOM_10_COUNTRIES_2025,
-  LIFE_EVALUATION_DOMAIN,
-  TOP_10_COUNTRIES_2025,
-  CONTINENTS,
-  CANADA_COLOR, TOP_10_COLOR, BOTTOM_10_COLOR, OTHER_COLOR
-} from '../../common/constants';
+import { LIFE_EVALUATION_DOMAIN, CONTINENTS } from '../../common/constants';
 import { ContinentFilter } from '../continent-filter/continent-filter';
 
 @Component({
@@ -69,6 +63,48 @@ export class LineChart {
       .attr('stroke', ([countryName, happinessRecord]) => this.dataManipulationService.getColorFromCountryName(countryName))
       .attr('stroke-width', 1.5)
       .attr('d', ([countryName, happinessRecord]) => lineGenerator(happinessRecord))
+      .on('mouseover', (event, d: any) => {
+        const [countryName, happinessRecords] = d
+        const color = this.dataManipulationService.getColorFromCountryName(countryName);
+        this.displayPanel(countryName, happinessRecords[0], color, event);
+      })
+      .on('mouseout', (event, d) => {
+        const panel = d3.select('#lineChartPanel');
+        panel.style('visibility', 'hidden');
+      })
+  }
+
+  private displayPanel(countryName: string, happinessRecord: HappinessRecord, color: string, event?: any) {
+    const panel = d3.select('#lineChartPanel');
+
+    panel.style('visibility', 'visible')
+      .style('border', `2px solid ${color}`)
+      .style('left', `${event.pageX + 10}px`)
+      .style('top', `${event.pageY + 10}px`)
+      .html('');
+
+    panel
+      .append('div')
+      .style('text-align', 'left')
+      .style('font-weight', 'bold')
+      .style('font-size', '22px')
+      .style('color', color)
+      .style('margin-top', '4px')
+      .text(countryName);
+
+    panel
+      .append('div')
+      .style('text-align', 'left')
+      .style('margin-top', '8px')
+      .style('font-size', '14px')
+      .text(`Life Evaluation: ${happinessRecord.lifeEvaluation}`);
+    
+    panel
+      .append('div')
+      .style('text-align', 'left')
+      .style('margin-top', '8px')
+      .style('font-size', '14px')
+      .text(`Rank: ${happinessRecord.rank}`);
   }
 
   private setAxis(svg: any) {
