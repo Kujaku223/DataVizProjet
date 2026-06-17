@@ -62,22 +62,31 @@ export class LineChart {
       .attr('fill', 'none')
       .attr('stroke', ([countryName, happinessRecord]) => this.dataManipulationService.getColorFromCountryName(countryName))
       .attr('stroke-width', 1.5)
+      .attr('id', 'countryPath')
       .attr('d', ([countryName, happinessRecord]) => lineGenerator(happinessRecord))
       .on('mousemove', (event, [countryName, happinessRecords]) => {
         const [mouseX, mouseY] = d3.pointer(event, svg.node());
+
         const hoveredYear = Math.round(xScale.invert(mouseX));
         const happinessRecord = happinessRecords.find(d => d.year === hoveredYear);
+        d3.selectAll('#countryPath')
+          .style('stroke-width', 1.5) // fix bug where mousemove too fast doesn't remove previous stroke-width
+          .style('opacity', 0.75); 
 
         if (happinessRecord) {
           const color = this.dataManipulationService.getColorFromCountryName(countryName);
           this.displayPanel(countryName, happinessRecord, color, event);
-          d3.select(event.currentTarget).style('stroke-width', 4.5);
+          d3.select(event.currentTarget)
+            .style('stroke-width', 4.5)
+            .style('opacity', 1.0);
           d3.select(event.currentTarget.parentNode).raise(); // the linePath is the child of a <g id=countryName> node, so we want to raise the parent
         }
 
       })
       .on('mouseout', (event, d) => {
         d3.select(event.currentTarget).style('stroke-width', 1.5);
+        d3.selectAll('#countryPath').style('opacity', 1.0);
+
         const panel = d3.select('#lineChartPanel');
         panel.style('visibility', 'hidden');
       })
