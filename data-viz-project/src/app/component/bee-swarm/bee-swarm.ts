@@ -77,6 +77,9 @@ export class BeeSwarm {
     })
     .on("mouseout", (event) => {
       d3.select(event.target).transition().duration(200).attr("r", radius);
+      // this.displayPanel(null, '', event);
+      const panel = d3.select('#panel');
+      panel.style('visibility', 'hidden');
     })
 
   }
@@ -154,6 +157,7 @@ export class BeeSwarm {
     .style('color', '#666')
     .style('line-height', '1')
     .style('user-select', 'none')
+    .on('mouseout', () => panel.style('visibility', 'hidden'));
 
   panel
     .append('div')
@@ -163,6 +167,7 @@ export class BeeSwarm {
     .style('color', color)
     .style('margin-top', '4px')
     .text(d.name);
+
 
   panel
     .append('div')
