@@ -66,33 +66,29 @@ export class LineChart {
       .attr('d', ([countryName, happinessRecord]) => lineGenerator(happinessRecord))
       .on('mousemove', (event, [countryName, happinessRecords]) => {
         const [mouseX, mouseY] = d3.pointer(event, svg.node());
-
         const hoveredYear = Math.round(xScale.invert(mouseX));
         const happinessRecord = happinessRecords.find(d => d.year === hoveredYear);
         d3.selectAll('#countryPath')
           .style('stroke-width', 1.5) // fix bug where mousemove too fast doesn't remove previous stroke-width
-          .style('opacity', 0.75); 
+          .style('opacity', 0.5); 
 
-        if (happinessRecord) {
-          const color = this.dataManipulationService.getColorFromCountryName(countryName);
-          this.displayPanel(countryName, happinessRecord, color, event);
-          d3.select(event.currentTarget)
+        this.displayPanel(countryName, event, hoveredYear, happinessRecord);
+        d3.select(event.currentTarget)
             .style('stroke-width', 4.5)
             .style('opacity', 1.0);
-          d3.select(event.currentTarget.parentNode).raise(); // the linePath is the child of a <g id=countryName> node, so we want to raise the parent
-        }
-
+        d3.select(event.currentTarget.parentNode).raise();
       })
       .on('mouseout', (event, d) => {
-        d3.select(event.currentTarget).style('stroke-width', 1.5);
-        d3.selectAll('#countryPath').style('opacity', 1.0);
+        this.hidePanel(event);
+      })
 
-        const panel = d3.select('#lineChartPanel');
-        panel.style('visibility', 'hidden');
+      svg.on('mouseout', (event, d) => { // Ensure hidePanel doesn't stay displayed when hovering out of the line chart
+        this.hidePanel(event);
       })
   }
 
-  private displayPanel(countryName: string, happinessRecord: HappinessRecord, color: string, event?: any) {
+  private displayPanel(countryName: string, event: any, hoveredYear: number, happinessRecord?: HappinessRecord) {
+    const color = this.dataManipulationService.getColorFromCountryName(countryName);
     const panel = d3.select('#lineChartPanel');
 
     panel.style('visibility', 'visible')
@@ -108,21 +104,38 @@ export class LineChart {
       .style('font-size', '22px')
       .style('color', color)
       .style('margin-top', '4px')
-      .text(`${countryName} - ${happinessRecord.year}`);
-
-    panel
-      .append('div')
-      .style('text-align', 'left')
-      .style('margin-top', '8px')
-      .style('font-size', '14px')
-      .text(`Life Evaluation: ${happinessRecord.lifeEvaluation}`);
+      .text(`${countryName} - ${hoveredYear}`);
     
-    panel
-      .append('div')
-      .style('text-align', 'left')
-      .style('margin-top', '8px')
-      .style('font-size', '14px')
-      .text(`Rank: ${happinessRecord.rank}`);
+    if (happinessRecord) {
+      panel
+        .append('div')
+        .style('text-align', 'left')
+        .style('margin-top', '8px')
+        .style('font-size', '14px')
+        .text(`Life Evaluation: ${happinessRecord.lifeEvaluation}`);
+      
+      panel
+        .append('div')
+        .style('text-align', 'left')
+        .style('margin-top', '8px')
+        .style('font-size', '14px')
+        .text(`Rank: ${happinessRecord.rank}`);
+    } else {
+      panel
+        .append('div')
+        .style('text-align', 'left')
+        .style('margin-top', '8px')
+        .style('font-size', '14px')
+        .text('Data unavailable: life evaluation was interpolated.');
+    }
+  }
+
+  private hidePanel(event: any) {
+    d3.select(event.currentTarget).style('stroke-width', 1.5);
+    d3.selectAll('#countryPath').style('opacity', 1.0);
+
+    const panel = d3.select('#lineChartPanel');
+    panel.style('visibility', 'hidden');
   }
 
   private setAxis(svg: any) {
