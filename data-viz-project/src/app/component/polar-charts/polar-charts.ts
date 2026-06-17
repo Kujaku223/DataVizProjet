@@ -79,30 +79,17 @@ export class PolarCharts {
       .attr('text-align', 'center')
       .attr('width', '100%')
       .attr('height', '100%')
-      .attr('overflow-y', 'auto')
-      .attr('overflow-x', 'auto')
+      .attr('overflow-y', 'visible')
+      .attr('overflow-x', 'visible')
+      .attr('overflow-wrap', 'break-word')
       .append('xhtml:h3')
       .attr('font-size', '1rem')
       .attr('font-weight', '600')
       .attr('class', 'chart-title')
+      .attr('overflow-wrap', 'break-word')
       .html(
         `Average normalized explanation factors for the 10 countries with the ${isTop10 ? 'highest' : 'lowest'} happiness scores in 2025`,
       );
-
-    /*
-    svg
-      .append('text')
-      .attr('x', center.x)
-      .attr('y', 15)
-      .attr('text-anchor', 'middle')
-      .attr('font-size', '1rem')
-      .attr('width', '15rem')
-      .attr('text-align', 'center')
-      .attr('font-weight', '600')
-      .text(
-        `Average normalized explanation factors for the 10 countries with the ${isTop10 ? 'highest' : 'lowest'} happiness scores in 2025`,
-      );
-    */
 
     const labels = [
       'GDP',
