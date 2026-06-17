@@ -12,17 +12,15 @@
 svg {
   display: block;
   margin: 0 auto;
-  background-color: #f5f5f5;
+  background-color: transparent;
 }
 
-/* Titres des sous-graphiques */
 .chart-title {
   font-size: 16px;
   font-weight: 500;
   text-anchor: middle;
 }
 
-/* Axes */
 .axis text {
   font-size: 11px;
   fill: #555;
@@ -33,27 +31,15 @@ svg {
   stroke: #888;
 }
 
-/* Grille */
-.grid line {
-  stroke: #d9d9d9;
-  stroke-width: 1;
-}
-
-.grid path {
-  display: none;
-}
-
-/* Barres */
 .bar {
   transition: opacity 0.2s ease;
 }
 
-.bar:hover {
-  opacity: 0.8;
-}
-
-/* Labels d'axes */
 .axis-label {
   font-size: 12px;
   fill: #555;
+}
+
+.bar-value {
+  pointer-events: none;
 }

@@ -21,7 +21,7 @@ export class BarCharts {
   private chartWidth = 300;
   private chartHeight = 280;
 
-  private margin = { top: 45, right: 15, bottom: 55, left: 60 };
+  private margin = { top: 50, right: 15, bottom: 55, left: 60 };
 
   private factors: {
     key: keyof HappinessRecord;
@@ -92,28 +92,20 @@ export class BarCharts {
         .domain([0, 3])
         .range([this.chartHeight - this.margin.bottom, this.margin.top]);
 
-      g.append('rect')
-        .attr('width', this.chartWidth - 10)
-        .attr('height', this.chartHeight - 10)
-        .attr('fill', 'white')
-        .attr('stroke', '#dddddd');
+
 
       g.append('text')
         .attr('class', 'chart-title')
-        .text(`Explained by: ${factor.label}`)
-        .attr('x', this.chartWidth / 2)
-        .attr('y', 22);
-
-      g.append('g')
-        .attr('class', 'grid')
-        .attr('transform', `translate(${this.margin.left}, 0)`)
-        .call(
-          d3
-            .axisLeft(yScale)
-            .ticks(6)
-            .tickSize(-(this.chartWidth - this.margin.left - this.margin.right - 10))
-            .tickFormat(() => '')
-        );
+        .attr('font-weight', 'bold')
+        .attr('font-size', '14px')
+        .text(factor.label)
+        .attr(
+          'x',
+          this.margin.left +
+            (this.chartWidth - this.margin.left - this.margin.right) / 2
+        )
+        .attr('y', 25)
+        .attr('text-anchor', 'middle');
 
       g.append('g')
         .attr('class', 'x axis')
@@ -128,7 +120,7 @@ export class BarCharts {
         .attr('transform', `translate(${this.margin.left}, 0)`)
         .call(d3.axisLeft(yScale).ticks(6).tickFormat(d3.format('.3f')));
 
-      g.selectAll('.bar')
+      const bars = g.selectAll('.bar')
         .data(data)
         .join('rect')
         .attr('class', 'bar')
@@ -137,6 +129,38 @@ export class BarCharts {
         .attr('width', xScale.bandwidth())
         .attr('height', (d) => yScale(0) - yScale(d.value))
         .attr('fill', factor.color);
+
+      const valueLabels = g.selectAll('.bar-value')
+        .data(data)
+        .join('text')
+        .attr('class', 'bar-value')
+        .attr('x', (d) => (xScale(d.year) ?? 0) + xScale.bandwidth() / 2)
+        .attr('y', (d) => yScale(d.value) - 6)
+        .attr('text-anchor', 'middle')
+        .attr('font-size', 11)
+        .attr('font-weight', 500)
+        .attr('fill', '#222')
+        .attr('opacity', 0)
+        .text((d) => d.value.toFixed(3));
+
+      bars
+        .on('mouseover', function (event, d) {
+          d3.select(this)
+            .attr('stroke', 'black')
+            .attr('stroke-width', 2);
+
+          valueLabels
+            .filter((labelData) => labelData.year === d.year)
+            .attr('opacity', 1);
+        })
+        .on('mouseout', function (event, d) {
+          d3.select(this)
+            .attr('stroke', 'none');
+
+          valueLabels
+            .filter((labelData) => labelData.year === d.year)
+            .attr('opacity', 0);
+        });
 
       g.append('text')
         .attr('class', 'axis-label')
