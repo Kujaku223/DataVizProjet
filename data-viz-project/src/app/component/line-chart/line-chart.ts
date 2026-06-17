@@ -19,7 +19,6 @@ export class LineChart {
   private margin = { top: 20, right: 30, bottom: 30, left: 60 };
   private happinessRecords: HappinessRecord[] = [];
 
-
   constructor() {
     afterNextRender(() => {
       this.happinessRecords = this.dataManipulationService.filterYears(2011);
@@ -34,41 +33,51 @@ export class LineChart {
   private createChart(selectedContinents: string[]) {
     // https://kkirtigoel01.medium.com/mastering-data-visualization-best-practices-with-d3-js-and-angular-3687531cb88f
     const element = this.chartContainer()?.nativeElement;
-    if (!element)
-        return
+    if (!element) return;
 
     d3.select(element).selectAll('*').remove();
-    const svg = d3.select(element)
-      .attr('width', this.width)
-      .attr('height', this.height);
+    const svg = d3.select(element).attr('width', this.width).attr('height', this.height);
     const [xScale, yScale] = this.setAxis(svg);
 
-    const filteredCountries = this.happinessRecords.filter(happinessRecord => selectedContinents.includes(happinessRecord.continent) || happinessRecord.country === 'Canada');
-    const groupedCountries: d3.InternMap<string, HappinessRecord[]> = d3.group(filteredCountries, d => d.country);
+    const filteredCountries = this.happinessRecords.filter(
+      (happinessRecord) =>
+        selectedContinents.includes(happinessRecord.continent) ||
+        happinessRecord.country === 'Canada',
+    );
+    const groupedCountries: d3.InternMap<string, HappinessRecord[]> = d3.group(
+      filteredCountries,
+      (d) => d.country,
+    );
 
-    const lineGenerator = d3.line<HappinessRecord>()
-      .x(d => xScale(d.year))
-      .y(d => yScale(d.lifeEvaluation))
+    const lineGenerator = d3
+      .line<HappinessRecord>()
+      .x((d) => xScale(d.year))
+      .y((d) => yScale(d.lifeEvaluation))
       .curve(d3.curveMonotoneX);
 
-    const countryLines = svg.append('g')
+    const countryLines = svg
+      .append('g')
       .attr('id', 'countryLines')
       .selectAll('g')
       .data(groupedCountries)
       .join('g')
-      .attr('id', ([countryName, happinessRecord]) => countryName)
+      .attr('id', ([countryName, happinessRecord]) => countryName);
 
-    countryLines.append('path')
+    countryLines
+      .append('path')
       .attr('fill', 'none')
-      .attr('stroke', ([countryName, happinessRecord]) => this.dataManipulationService.getColorFromCountryName(countryName))
+      .attr('stroke', ([countryName, happinessRecord]) =>
+        this.dataManipulationService.getColorFromCountryName(countryName),
+      )
       .attr('stroke-width', 1.5)
-      .attr('id', 'countryPath')
+      .attr('class', 'country-path')
+      .attr('opacity', 1.0)
       .attr('d', ([countryName, happinessRecord]) => lineGenerator(happinessRecord))
       .on('mousemove', (event, [countryName, happinessRecords]) => {
         const [mouseX, mouseY] = d3.pointer(event, svg.node());
         const hoveredYear = Math.round(xScale.invert(mouseX));
         const happinessRecord = happinessRecords.find(d => d.year === hoveredYear);
-        d3.selectAll('#countryPath')
+        d3.selectAll('.country-path')
           .style('stroke-width', 1.5) // fix bug where mousemove too fast doesn't remove previous stroke-width
           .style('opacity', 0.5); 
 
@@ -82,7 +91,7 @@ export class LineChart {
         this.hidePanel(event);
       })
 
-      svg.on('mouseout', (event, d) => { // Ensure hidePanel doesn't stay displayed when hovering out of the line chart
+      svg.on('mouseout', (event, d) => { // Try to ensure panel doesn't stay displayed when hovering out of the line chart
         this.hidePanel(event);
       })
   }
@@ -91,7 +100,8 @@ export class LineChart {
     const color = this.dataManipulationService.getColorFromCountryName(countryName);
     const panel = d3.select('#lineChartPanel');
 
-    panel.style('visibility', 'visible')
+    panel
+      .style('visibility', 'visible')
       .style('border', `2px solid ${color}`)
       .style('left', `${event.pageX}px`)
       .style('top', `${event.pageY}px`)
@@ -126,21 +136,19 @@ export class LineChart {
         .style('text-align', 'left')
         .style('margin-top', '8px')
         .style('font-size', '14px')
-        .text('Data unavailable: life evaluation was interpolated.');
+        .text('Data unavailable: interpolated');
     }
   }
 
   private hidePanel(event: any) {
-    d3.select(event.currentTarget).style('stroke-width', 1.5);
-    d3.selectAll('#countryPath').style('opacity', 1.0);
+    d3.selectAll('.country-path').style('opacity', 1.0).style('stroke-width', 1.5);
 
     const panel = d3.select('#lineChartPanel');
     panel.style('visibility', 'hidden');
   }
 
   private setAxis(svg: any) {
-    const axisGroup = svg.append('g')
-      .attr('id', 'axis');
+    const axisGroup = svg.append('g').attr('id', 'axis');
 
     const xScale = this.setXScale();
     const yScale = this.setYScale();
@@ -160,33 +168,35 @@ export class LineChart {
       .text('Year')
       .attr('class', 'x axis-text')
       .attr('x', this.width / 2)
-      .attr('y', this.height)
+      .attr('y', this.height);
   }
 
   private setYAxis(g: any, yScale: any) {
     g.append('g')
       .attr('class', 'y axis')
       .attr('transform', `translate(${this.margin.left}, 0)`)
-      .call(d3.axisLeft(yScale).ticks(20, ".3f"))
+      .call(d3.axisLeft(yScale).ticks(20, '.3f'));
 
     g.append('text')
       .text('Life Evaluation')
       .attr('class', 'y axis-text')
       .attr('transform', 'rotate(-90)')
       .attr('x', -this.height / 2)
-      .attr('y', 20)
+      .attr('y', 20);
   }
 
   private setXScale() {
-    const years = this.happinessRecords.map(d => d.year)
+    const years = this.happinessRecords.map((d) => d.year);
 
-    return d3.scaleLinear()
+    return d3
+      .scaleLinear()
       .domain([Math.min(...years), Math.max(...years)])
       .range([this.margin.left, this.width - this.margin.right]);
   }
 
   private setYScale() {
-    return d3.scaleLinear()
+    return d3
+      .scaleLinear()
       .domain(LIFE_EVALUATION_DOMAIN)
       .range([this.height - this.margin.bottom, this.margin.top]);
   }
