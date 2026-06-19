@@ -58,3 +58,36 @@ footer p {
   margin: 1rem;
   text-align: left;
 }
+
+.color-legend {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.legend-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.dot {
+  width: 1rem;
+  height: 1rem;
+}
+
+.top-10 {
+  background-color: #1874ed;
+}
+
+.bottom-10 {
+  background-color: #ffa500;
+}
+
+.canada {
+  background-color: #ff0000;
+}
