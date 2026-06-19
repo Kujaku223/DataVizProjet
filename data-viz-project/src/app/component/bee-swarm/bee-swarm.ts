@@ -13,171 +13,185 @@ export class BeeSwarm {
   @Input({ required: true }) data!: any[];
   private dataManipulationService = inject(DataManipulation);
   private chartContainer = viewChild<ElementRef>('chartContainer');
+  
+  private readonly width = 600;
+  private readonly height = 320;
+
+  private readonly margin = {
+    left: 20,
+    right: 20,
+    bottom: 40,
+  };
+
+  private readonly radius = 3;
+  private baselineY = this.height - this.margin.bottom;
 
   // sources https://observablehq.com/@d3/beeswarm/2
-
-
   constructor() {
-    // Ensure D3 only manipulates the DOM on the browser
+    const element = this.chartContainer()?.nativeElement;
     afterNextRender(() => {
       this.createChart();
     });
   }
-
+  
   private createChart(): void {
     // https://kkirtigoel01.medium.com/mastering-data-visualization-best-practices-with-d3-js-and-angular-3687531cb88f
     const element = this.chartContainer()?.nativeElement;
     if (!element) return;
-
+    
     d3.select(element).selectAll('svg').remove();
+    const svg = this.createSvg(element);
+    const x = this.createXScale();
+    this.drawMiddleLine(svg);
+    this.drawAxis(svg, x);
+    const nodes = this.createNodes(x);
+    this.runSimulation(nodes);
+    this.drawCircles(svg, nodes);
+  }
 
-    const width = 300;
-    const height = 170;
-    const marginTop = 20;
-    const marginRight = 20;
-    const marginBottom = 40;
-    const marginLeft = 20;
-    const radius = 3;
-    const padding = 1.5;
+  private createSvg(element: HTMLElement) {
+    return d3.select(element)
+      .append('svg')
+      .attr('width', this.width)
+      .attr('height', this.height)
+      .attr('viewBox', `0 0 ${this.width} ${this.height}`)
+      .attr('preserveAspectRatio', 'xMidYMid meet');
+  }
 
-    const x = d3.scaleLinear()
-      .range([marginLeft, width - marginRight])
-      .domain(d3.extent(this.data, (d: any) => d["value"]) as any);
+  private createXScale() {
+    return d3.scaleLinear()
+      .range([this.margin.left, this.width - this.margin.right])
+      .domain(d3.extent(this.data, d => d.value) as [number, number]
+      );
+  }
 
-    // Create the SVG container
-    const svg = d3.select(element)
-    .append('svg')
-    .attr('width', '100%')
-    .attr('height', height)
-    .attr('viewBox', `0 0 ${width} ${height}`)
-    .attr('preserveAspectRatio', 'xMidYMid meet');
-    svg.append("g")
-      .attr("transform", `translate(0,${height - marginBottom})`)
+  private drawMiddleLine(svg: d3.Selection<SVGSVGElement, unknown, null, undefined>) {
+    svg.append("line")
+      .attr("x1", 0)
+      .attr("x2", this.width)
+      .attr("y1", this.baselineY/7.5)
+      .attr("y2", this.baselineY/7.5)
+      .attr("stroke", "gray");
+  }
+
+  private drawAxis(svg: d3.Selection<SVGSVGElement, unknown, null, undefined>, x: d3.ScaleLinear<number, number>): void {
+    svg.append('g')
+      .attr('transform', `translate(0,${this.baselineY/3})`)
       .call(d3.axisBottom(x).tickSizeOuter(0));
-
-
-    svg.append("g")
-      .selectAll()
-      .data(this.dodge(this.data, {radius: radius * 2 + padding, x: d => x(d["value"])}))
-      .join("circle")
-      .attr("cx", (d:any) => d.x)
-      .attr("cy", d => height - marginBottom - radius - padding - (d as any).y)
-      .attr("r", radius)
-      .attr("fill", (d:any)=> this.dataManipulationService.getColorFromCountryName(d.data.name))
-      .attr("class", "point")
-      .append("title")
-      .text((d: any) => d.data.name);
-      
-
-    d3.selectAll(".point")
-    .on("mouseover", (event, d: any) => {
-      // d3.select(event.target).transition().duration(200).attr("r", 4);
-      const color = this.dataManipulationService.getColorFromCountryName(d.data.name);
-      this.displayPanel(d.data, color, event);
-    })
-    .on("mouseout", (event) => {
-      d3.select(event.target).transition().duration(200).attr("r", radius);
-      // this.displayPanel(null, '', event);
-      const panel = d3.select('#panel');
-      panel.style('visibility', 'hidden');
-    })
-
   }
 
 
-  //////////////////////////////////////////////////////////
-  // Dodging logic
-  /////////////////////////////////////////////////////////
+  private createNodes(x: d3.ScaleLinear<number, number>) {
+    return this.data.map(d => ({
+      data: d,
+      x: x(d.value),
+      y: this.baselineY,
+      targetX: x(d.value)
+    }));
+  }
 
-  dodge(data: any[], {radius = 1, x = (d: any, i: number, data: any[]) => d} = {}) {
-    const radius2 = radius ** 2;
-    const circles:any = data.map((d, i, data) => ({x: +x(d, i, data), data: d})).sort((a, b) => a.x - b.x);
-    const epsilon = 1e-3;
-    let head: { x: any; next?: any; data?: any; } | null = null, tail:any = null;
+  private runSimulation(nodes: any[]): void {
+    // https://stackoverflow.com/questions/69225073/d3js-beeswarm-with-force-simulation 
+    // https://d3js.org/d3-force/simulation
+    d3.forceSimulation(nodes)
+      .force('x', d3.forceX((d: any) => d.targetX).strength(1))
+      .force('y', d3.forceY(0).strength(0.03))
+      .force('collide', d3.forceCollide(this.radius + 0.3).strength(1))
+      .stop();
 
-  // Returns true if circle ⟨x,y⟩ intersects with any circle in the queue.
-  function intersects(x: any, y: any) {
-    let a:any = head;
-    while (a) {
-      if (radius2 - epsilon > (a.x - x) ** 2 + (a.y - y) ** 2) {
-        return true;
-      }
-      a = a.next;
+    const simulation = d3.forceSimulation(nodes)
+      .force('x', d3.forceX((d: any) => d.targetX).strength(1))
+      .force('y', d3.forceY(0).strength(0.03))
+      .force('collide', d3.forceCollide(this.radius + 0.3))
+      .stop();
+
+    for (let i = 0; i < 300; i++) {
+      simulation.tick();
+
+      nodes.forEach((d: any) => {
+        if (d.y > this.baselineY - this.radius) {
+          d.y = this.baselineY - this.radius;
+        }
+      });
     }
-    return false;
   }
 
-  // Place each circle sequentially.
-  for (const b of circles) {
+  private drawCircles(svg: d3.Selection<SVGSVGElement, unknown, null, undefined>, nodes: any[]): void {
+    const circles = svg
+      .append('g')
+      .selectAll('circle')
+      .data(nodes)
+      .join('circle')
+      .attr('cx', d => d.x)
+      .attr('cy', d => d.y)
+      .attr('r', this.radius)
+      .attr(
+        'fill',
+        d => this.dataManipulationService.getColorFromCountryName(d.data.name)
+      )
+      .attr('class', 'point');
 
-    // Remove circles from the queue that can’t intersect the new circle b.
-    while (head && head.x < b.x - radius2) head = head.next;
+    circles
+      .append('title')
+      .text(d => d.data.name);
 
-    // Choose the minimum non-intersecting tangent.
-    if (intersects(b.x, b.y = 0)) {
-      let a: any = head;
-      b.y = Infinity;
-      do {
-        let y = a.y + Math.sqrt(radius2 - (a.x - b.x) ** 2);
-        if (y < b.y && !intersects(b.x, y)) b.y = y;
-        a = a.next;
-      } while (a);
-    }
-
-    // Add b to the queue.
-    b.next = null;
-    if (head === null) head = tail = b;
-    else tail = tail.next = b;
+    this.attachEvents(circles);
   }
 
-    return circles;
-  }
-  //////////////////////////////////////////////////////////
-  // Panel logic
-  /////////////////////////////////////////////////////////
- private displayPanel(d: any, color: string, event?: any) {
-  const panel = d3.select('#panel');
+  private attachEvents(circles: any): void {
+    circles
+      .on('mouseover', (event: { target: any; }, d: { data: { name: string; }; }) => {
+        d3.select(event.target).transition().duration(200).attr('r', this.radius * 1.5);
 
-  panel
-    .style('visibility', 'visible')
-    .style('left', `${event.pageX + 10}px`)
-    .style('top', `${event.pageY + 10}px`)
-    .style('border', `2px solid ${color}`)
-    .html('');
+        const color = this.dataManipulationService.getColorFromCountryName(d.data.name);
+        this.displayPanel(d.data, color, event);
+      })
+      .on('mouseout', (event: { target: any; }) => {
+        d3.select(event.target).transition().duration(200).attr('r', this.radius);
 
-  const header = panel
-    .append('div')
-    .style('display', 'flex')
-    .style('justify-content', 'flex-end');
-
-  header
-    .append('div')
-    .style('cursor', 'pointer')
-    .style('font-size', '12px')
-    .style('color', '#666')
-    .style('line-height', '1')
-    .style('user-select', 'none')
-    .on('mouseout', () => panel.style('visibility', 'hidden'));
-
-  panel
-    .append('div')
-    .style('text-align', 'left')
-    .style('font-weight', 'bold')
-    .style('font-size', '22px')
-    .style('color', color)
-    .style('margin-top', '4px')
-    .text(d.name);
-
-
-  panel
-    .append('div')
-    .style('text-align', 'left')
-    .style('margin-top', '8px')
-    .style('font-size', '14px')
-    .text(`Value: ${d.value}`);
+        d3.select('#panel').style('visibility', 'hidden');
+      });
   }
   
+  private displayPanel(d: any, color: string, event?: any) {
+    const panel = d3.select('#panel');
+    panel
+      .style('visibility', 'visible')
+      .style('left', `${event.pageX}px`)
+      .style('top', `${event.pageY-30}px`)
+      .style('border', `2px solid ${color}`)
+      .html('');
 
+    const header = panel
+      .append('div')
+      .style('display', 'flex')
+      .style('justify-content', 'flex-end');
+
+    header
+      .append('div')
+      .style('cursor', 'pointer')
+      .style('font-size', '12px')
+      .style('color', '#666')
+      .style('line-height', '1')
+      .style('user-select', 'none')
+      .on('mouseout', () => panel.style('visibility', 'hidden'));
+
+    panel
+      .append('div')
+      .style('text-align', 'left')
+      .style('font-weight', 'bold')
+      .style('font-size', '22px')
+      .style('color', color)
+      .style('margin-top', '4px')
+      .text(d.name);
+
+    panel
+      .append('div')
+      .style('text-align', 'left')
+      .style('margin-top', '8px')
+      .style('font-size', '14px')
+      .text(`Value: ${d.value}`);
+    }
 }
 
 
