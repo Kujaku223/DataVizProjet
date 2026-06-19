@@ -71,29 +71,6 @@ export class PolarCharts {
         .style('fill', 'none');
     }
 
-    // REFERENCE: https://stackoverflow.com/questions/24784302/wrapping-text-in-d3
-    svg
-      .append('foreignObject')
-      .attr('width', '30rem')
-      .attr('height', '5rem')
-      .attr('x', '30')
-      .attr('y', 2.6 * radius)
-      .append('xhtml:div')
-      .attr('text-align', 'center')
-      .attr('width', '100%')
-      .attr('height', '100%')
-      .attr('overflow-y', 'visible')
-      .attr('overflow-x', 'visible')
-      .attr('overflow-wrap', 'break-word')
-      .append('xhtml:h3')
-      .attr('font-size', '1rem')
-      .attr('font-weight', '600')
-      .attr('class', 'chart-title')
-      .attr('overflow-wrap', 'break-word')
-      .html(
-        `Average normalized explanation factors for the 10 countries with the ${isTop10 ? 'highest' : 'lowest'} happiness scores in 2025`,
-      );
-
     const labels = [
       'GDP',
       'Social support',

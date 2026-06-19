@@ -91,3 +91,14 @@ footer p {
 .canada {
   background-color: #ff0000;
 }
+
+.plot-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.plot-title h3 {
+  font-size: 1.75rem;
+}
