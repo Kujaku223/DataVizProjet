@@ -35,7 +35,7 @@ export class PolarCharts {
 
     const values = this.dataManipulationService.getExtremum10Stats(2025, isTop10);
 
-    const data = isTop10 ? [{ color: 'blue', values: values }] : [{ color: 'red', values: values }];
+    const data = isTop10 ? [{ color: 'blue', values: values }] : [{ color: 'orange', values: values }];
 
     const svg = d3.select(element).attr('class', 'polar-chart');
 
