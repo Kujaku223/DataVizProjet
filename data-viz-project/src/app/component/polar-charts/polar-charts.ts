@@ -1,6 +1,7 @@
 import { afterNextRender, Component, ElementRef, inject, viewChild } from '@angular/core';
 import { DataManipulation } from '../../service/data-manipulation';
 import * as d3 from 'd3';
+import { BOTTOM_10_COLOR, TOP_10_COLOR } from '../../common/constants';
 
 @Component({
   selector: 'app-polar-charts',
@@ -35,7 +36,9 @@ export class PolarCharts {
 
     const values = this.dataManipulationService.getExtremum10Stats(2025, isTop10);
 
-    const data = isTop10 ? [{ color: 'blue', values: values }] : [{ color: 'orange', values: values }];
+    const data = isTop10
+      ? [{ color: TOP_10_COLOR, values: values }]
+      : [{ color: BOTTOM_10_COLOR, values: values }];
 
     const svg = d3.select(element).attr('class', 'polar-chart');
 
