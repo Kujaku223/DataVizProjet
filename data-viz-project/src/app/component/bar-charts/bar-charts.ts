@@ -128,7 +128,8 @@ export class BarCharts {
         .attr('y', (d) => yScale(d.value))
         .attr('width', xScale.bandwidth())
         .attr('height', (d) => yScale(0) - yScale(d.value))
-        .attr('fill', factor.color);
+        .attr('fill', factor.color)
+        .attr('data-color', factor.color);
 
       const valueLabels = g.selectAll('.bar-value')
         .data(data)
@@ -145,17 +146,20 @@ export class BarCharts {
 
       bars
         .on('mouseover', function (event, d) {
+          const originalColor = d3.select(this).attr('data-color');
+
           d3.select(this)
-            .attr('stroke', 'black')
-            .attr('stroke-width', 2);
+            .attr('fill', d3.color(originalColor)?.darker(0.8)?.toString() ?? originalColor);
 
           valueLabels
             .filter((labelData) => labelData.year === d.year)
             .attr('opacity', 1);
         })
         .on('mouseout', function (event, d) {
+          const originalColor = d3.select(this).attr('data-color');
+
           d3.select(this)
-            .attr('stroke', 'none');
+            .attr('fill', originalColor);
 
           valueLabels
             .filter((labelData) => labelData.year === d.year)
