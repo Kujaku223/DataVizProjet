@@ -61,18 +61,25 @@ footer p {
 
 .color-legend {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 2rem;
+  max-width: 100vw;
+  gap: 1rem;
 }
 
 .legend-item {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: left;
+  width: 30vw;
   gap: 1rem;
+  margin: 0;
+}
+
+.legend-item p {
+  font-size: 1.25rem;
+  margin: 0;
 }
 
 .dot {
