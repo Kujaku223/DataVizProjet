@@ -13,12 +13,12 @@ export class BeeSwarms {
   private dataManipulationService = inject(DataManipulation)
 
   private readonly whrAttributes: { key: keyof HappinessRecord; label: string }[] = [
-    { key: 'GDP',                  label: 'GDP' },
-    { key: 'socialSupport',        label: 'Social Support' },
-    { key: 'lifeExpectancy',       label: 'Life Expectancy' }, // TODO Mélangeant si même nom que lui en-bas???
-    { key: 'freedom',              label: 'Freedom' },
-    { key: 'generosity',           label: 'Generosity' },
-    { key: 'corruptionPerception', label: 'Corruption Perception' },
+    { key: 'GDP',                  label: 'GDP (2025)' },
+    { key: 'socialSupport',        label: 'Social Support (2025)' },
+    { key: 'lifeExpectancy',       label: 'Life Expectancy (2025)' }, // TODO Mélangeant si même nom que lui en-bas???
+    { key: 'freedom',              label: 'Freedom (2025)' },
+    { key: 'generosity',           label: 'Generosity (2025)' },
+    { key: 'corruptionPerception', label: 'Corruption Perception (2025)' },
   ];
 
   private readonly hdiAttributes: { key: keyof HumanDevelopmentIndexRecord; label: string }[] = [
@@ -48,7 +48,7 @@ export class BeeSwarms {
           name: d.country,
           value: d[key],
         }))
-        .filter( d => d.value !== null && !isNaN(d.value)) 
+        .filter( d => d.value !== null && !isNaN(d.value))
       }));
 
     ngOnInit() {
