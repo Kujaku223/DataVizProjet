@@ -15,7 +15,7 @@ export class BeeSwarm {
   private chartContainer = viewChild<ElementRef>('chartContainer');
 
   private readonly width = 600;
-  private readonly height = 320;
+  private readonly height = 120;
 
   private readonly margin = {
     left: 20,
@@ -53,7 +53,7 @@ export class BeeSwarm {
   return d3.select(element)
     .attr('width', this.width)
     .attr('height', this.height)
-    .attr('viewBox', `0 0 ${this.width} ${this.height}`)
+    .attr('viewBox', `0 0 ${this.width} ${this.height * 0.5}`)
     .attr('preserveAspectRatio', 'xMidYMid meet');
 }
 
