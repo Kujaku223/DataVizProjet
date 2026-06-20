@@ -75,7 +75,7 @@ export class BeeSwarm {
 
   private drawAxis(svg: d3.Selection<SVGSVGElement, unknown, null, undefined>, x: d3.ScaleLinear<number, number>): void {
     svg.append('g')
-      .attr('transform', `translate(0,${this.baselineY/3})`)
+      .attr('transform', `translate(0,${this.baselineY/2})`)
       .call(d3.axisBottom(x).tickSizeOuter(0));
   }
 
