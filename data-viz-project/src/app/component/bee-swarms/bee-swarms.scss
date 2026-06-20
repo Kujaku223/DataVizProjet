@@ -1,6 +1,8 @@
 .bee-swarms-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  flex-direction: column ;
+  align-items: center;
+  //grid-template-columns: repeat(2, 1fr);
 }
 
 .bee-swarms-grid app-bee-swarm {

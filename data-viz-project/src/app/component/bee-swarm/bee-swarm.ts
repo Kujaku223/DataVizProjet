@@ -13,7 +13,7 @@ export class BeeSwarm {
   @Input({ required: true }) data!: any[];
   private dataManipulationService = inject(DataManipulation);
   private chartContainer = viewChild<ElementRef>('chartContainer');
-  
+
   private readonly width = 600;
   private readonly height = 320;
 
@@ -33,13 +33,13 @@ export class BeeSwarm {
       this.createChart();
     });
   }
-  
+
   private createChart(): void {
     // https://kkirtigoel01.medium.com/mastering-data-visualization-best-practices-with-d3-js-and-angular-3687531cb88f
     const element = this.chartContainer()?.nativeElement;
     if (!element) return;
-    
-    d3.select(element).selectAll('svg').remove();
+
+    d3.select(element).selectAll('*').remove();
     const svg = this.createSvg(element);
     const x = this.createXScale();
     this.drawMiddleLine(svg);
@@ -49,14 +49,13 @@ export class BeeSwarm {
     this.drawCircles(svg, nodes);
   }
 
-  private createSvg(element: HTMLElement) {
-    return d3.select(element)
-      .append('svg')
-      .attr('width', this.width)
-      .attr('height', this.height)
-      .attr('viewBox', `0 0 ${this.width} ${this.height}`)
-      .attr('preserveAspectRatio', 'xMidYMid meet');
-  }
+  private createSvg(element: SVGSVGElement) {
+  return d3.select(element)
+    .attr('width', this.width)
+    .attr('height', this.height)
+    .attr('viewBox', `0 0 ${this.width} ${this.height}`)
+    .attr('preserveAspectRatio', 'xMidYMid meet');
+}
 
   private createXScale() {
     return d3.scaleLinear()
@@ -91,7 +90,7 @@ export class BeeSwarm {
   }
 
   private runSimulation(nodes: any[]): void {
-    // https://stackoverflow.com/questions/69225073/d3js-beeswarm-with-force-simulation 
+    // https://stackoverflow.com/questions/69225073/d3js-beeswarm-with-force-simulation
     // https://d3js.org/d3-force/simulation
     d3.forceSimulation(nodes)
       .force('x', d3.forceX((d: any) => d.targetX).strength(1))
@@ -152,7 +151,7 @@ export class BeeSwarm {
         d3.select('#panel').style('visibility', 'hidden');
       });
   }
-  
+
   private displayPanel(d: any, color: string, event?: any) {
     const panel = d3.select('#panel');
     panel
