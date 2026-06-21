@@ -70,22 +70,21 @@ export class LineChart {
         this.dataManipulationService.getColorFromCountryName(countryName),
       )
       .attr('stroke-width', 1.5)
+      .attr('opacity', 0.5)
       .attr('class', 'country-path')
-      .attr('opacity', 1.0)
       .attr('d', ([countryName, happinessRecord]) => lineGenerator(happinessRecord))
       .on('mousemove', (event, [countryName, happinessRecords]) => {
         const [mouseX, mouseY] = d3.pointer(event, svg.node());
         const hoveredYear = Math.round(xScale.invert(mouseX));
         const happinessRecord = happinessRecords.find((d) => d.year === hoveredYear);
-        d3.selectAll('.country-path')
-          .style('stroke-width', 1.5) // fix bug where mousemove too fast doesn't remove previous stroke-width
-          .style('opacity', 0.5);
+        d3.selectAll('.country-path').style('stroke-width', 1.5).style('opacity', 0.5); // fix bug where mousemove too fast doesn't remove previous stroke-width
 
         this.displayPanel(countryName, event, hoveredYear, happinessRecord);
-        d3.select(event.currentTarget).style('stroke-width', 4.5).style('opacity', 1.0);
+        d3.select(event.currentTarget).style('stroke-width', 4.5).style('opacity', 1);
         d3.select(event.currentTarget.parentNode).raise();
       })
       .on('mouseout', (event, d) => {
+        d3.select(event.currentTarget).style('stroke-width', 1.5).style('opacity', 0.5);
         this.hidePanel(event);
       });
 
@@ -145,7 +144,7 @@ export class LineChart {
   }
 
   private hidePanel(event: any) {
-    d3.selectAll('.country-path').style('opacity', 1.0).style('stroke-width', 1.5);
+    d3.selectAll('.country-path').style('opacity', 0.5).style('stroke-width', 1.5);
 
     const panel = d3.select('#lineChartPanel');
     panel.style('visibility', 'hidden');
