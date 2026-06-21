@@ -242,12 +242,22 @@ export class StackedBarChart {
     yScale: d3.ScaleLinear<number, number>,
     colorScale: d3.ScaleOrdinal<StackKey, string>
   ) {
-    svg.append('g')
+    const barsGroup = svg.append('g')
       .attr('id', 'stacked-bars')
       .selectAll('g')
       .data(stackedData)
       .join('g')
       .attr('fill', d => colorScale(d.key))
+      .on('mouseenter', (_, hoveredElement) => {
+        barsGroup.style('opacity', element =>
+          hoveredElement.key === element.key ? 1 : 0.2
+        );
+      })
+      .on('mouseleave', () => {
+        barsGroup.style('opacity', 1);
+      });
+
+    barsGroup
       .selectAll('rect')
       .data(d => d)
       .join('rect')
