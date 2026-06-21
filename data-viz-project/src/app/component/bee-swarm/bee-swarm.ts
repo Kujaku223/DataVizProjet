@@ -1,5 +1,5 @@
-import {afterNextRender, Component, ElementRef, inject, Input, viewChild} from '@angular/core';
-import {DataManipulation} from '../../service/data-manipulation';
+import { afterNextRender, Component, ElementRef, inject, Input, viewChild } from '@angular/core';
+import { DataManipulation } from '../../service/data-manipulation';
 import * as d3 from 'd3';
 
 @Component({
@@ -9,7 +9,6 @@ import * as d3 from 'd3';
   styleUrl: './bee-swarm.scss',
 })
 export class BeeSwarm {
-
   @Input({ required: true }) data!: any[];
   private dataManipulationService = inject(DataManipulation);
   private chartContainer = viewChild<ElementRef>('chartContainer');
@@ -50,42 +49,48 @@ export class BeeSwarm {
   }
 
   private createSvg(element: SVGSVGElement) {
-  return d3.select(element)
-    .attr('width', this.width)
-    .attr('height', this.height)
-    .attr('viewBox', `0 0 ${this.width} ${this.height * 0.5}`)
-    .attr('preserveAspectRatio', 'xMidYMid meet');
-}
+    return d3
+      .select(element)
+      .attr('width', this.width)
+      .attr('height', this.height)
+      .attr('viewBox', `0 0 ${this.width} ${this.height * 0.5}`)
+      .attr('preserveAspectRatio', 'xMidYMid meet');
+  }
 
   private createXScale() {
-    return d3.scaleLinear()
+    return d3
+      .scaleLinear()
       .range([this.margin.left, this.width - this.margin.right])
-      .domain(d3.extent(this.data, d => d.value) as [number, number]
-      );
+      .domain(d3.extent(this.data, (d) => d.value) as [number, number]);
   }
 
   private drawMiddleLine(svg: d3.Selection<SVGSVGElement, unknown, null, undefined>) {
-    svg.append("line")
-      .attr("x1", 0)
-      .attr("x2", this.width)
-      .attr("y1", this.baselineY/7.5)
-      .attr("y2", this.baselineY/7.5)
-      .attr("stroke", "gray");
+    svg
+      .append('line')
+      .attr('x1', 0)
+      .attr('x2', this.width)
+      .attr('y1', this.baselineY / 7.5)
+      .attr('y2', this.baselineY / 7.5)
+      .attr('stroke', 'gray')
+      .attr('opacity', 0.35);
   }
 
-  private drawAxis(svg: d3.Selection<SVGSVGElement, unknown, null, undefined>, x: d3.ScaleLinear<number, number>): void {
-    svg.append('g')
-      .attr('transform', `translate(0,${this.baselineY/2})`)
+  private drawAxis(
+    svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+    x: d3.ScaleLinear<number, number>,
+  ): void {
+    svg
+      .append('g')
+      .attr('transform', `translate(0,${this.baselineY / 2})`)
       .call(d3.axisBottom(x).tickSizeOuter(0));
   }
 
-
   private createNodes(x: d3.ScaleLinear<number, number>) {
-    return this.data.map(d => ({
+    return this.data.map((d) => ({
       data: d,
       x: x(d.value),
       y: this.baselineY,
-      targetX: x(d.value)
+      targetX: x(d.value),
     }));
   }
 
@@ -98,7 +103,8 @@ export class BeeSwarm {
       .force('collide', d3.forceCollide(this.radius + 0.3).strength(1))
       .stop();
 
-    const simulation = d3.forceSimulation(nodes)
+    const simulation = d3
+      .forceSimulation(nodes)
       .force('x', d3.forceX((d: any) => d.targetX).strength(1))
       .force('y', d3.forceY(0).strength(0.03))
       .force('collide', d3.forceCollide(this.radius + 0.3))
@@ -115,37 +121,38 @@ export class BeeSwarm {
     }
   }
 
-  private drawCircles(svg: d3.Selection<SVGSVGElement, unknown, null, undefined>, nodes: any[]): void {
+  private drawCircles(
+    svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+    nodes: any[],
+  ): void {
     const circles = svg
       .append('g')
       .selectAll('circle')
       .data(nodes)
       .join('circle')
-      .attr('cx', d => d.x)
-      .attr('cy', d => d.y)
+      .attr('cx', (d) => d.x)
+      .attr('cy', (d) => d.y)
       .attr('r', this.radius)
-      .attr(
-        'fill',
-        d => this.dataManipulationService.getColorFromCountryName(d.data.name)
-      )
+      .attr('fill', (d) => this.dataManipulationService.getColorFromCountryName(d.data.name))
       .attr('class', 'point');
 
-    circles
-      .append('title')
-      .text(d => d.data.name);
+    circles.append('title').text((d) => d.data.name);
 
     this.attachEvents(circles);
   }
 
   private attachEvents(circles: any): void {
     circles
-      .on('mouseover', (event: { target: any; }, d: { data: { name: string; }; }) => {
-        d3.select(event.target).transition().duration(200).attr('r', this.radius * 1.5);
+      .on('mouseover', (event: { target: any }, d: { data: { name: string } }) => {
+        d3.select(event.target)
+          .transition()
+          .duration(200)
+          .attr('r', this.radius * 1.5);
 
         const color = this.dataManipulationService.getColorFromCountryName(d.data.name);
         this.displayPanel(d.data, color, event);
       })
-      .on('mouseout', (event: { target: any; }) => {
+      .on('mouseout', (event: { target: any }) => {
         d3.select(event.target).transition().duration(200).attr('r', this.radius);
 
         d3.select('#panel').style('visibility', 'hidden');
@@ -157,7 +164,7 @@ export class BeeSwarm {
     panel
       .style('visibility', 'visible')
       .style('left', `${event.pageX}px`)
-      .style('top', `${event.pageY-30}px`)
+      .style('top', `${event.pageY - 30}px`)
       .style('border', `2px solid ${color}`)
       .html('');
 
@@ -190,7 +197,5 @@ export class BeeSwarm {
       .style('margin-top', '8px')
       .style('font-size', '14px')
       .text(`Value: ${d.value}`);
-    }
+  }
 }
-
-
