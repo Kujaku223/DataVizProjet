@@ -77,7 +77,7 @@ export class LineChart {
         const [mouseX, mouseY] = d3.pointer(event, svg.node());
         const hoveredYear = Math.round(xScale.invert(mouseX));
         const happinessRecord = happinessRecords.find((d) => d.year === hoveredYear);
-        d3.selectAll('.country-path').style('stroke-width', 1.5).style('opacity', 0.5); // fix bug where mousemove too fast doesn't remove previous stroke-width
+        d3.selectAll('.country-path').style('stroke-width', 1.5).style('opacity', 0.5);
 
         this.displayPanel(countryName, event, hoveredYear, happinessRecord);
         d3.select(event.currentTarget).style('stroke-width', 4.5).style('opacity', 1);
@@ -89,7 +89,6 @@ export class LineChart {
       });
 
     svg.on('mouseout', (event, d) => {
-      // Try to ensure panel doesn't stay displayed when hovering out of the line chart
       this.hidePanel(event);
     });
   }

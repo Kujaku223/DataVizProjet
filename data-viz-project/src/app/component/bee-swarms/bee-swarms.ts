@@ -15,7 +15,7 @@ export class BeeSwarms {
   private readonly whrAttributes: { key: keyof HappinessRecord; label: string }[] = [
     { key: 'GDP',                  label: 'GDP (2025)' },
     { key: 'socialSupport',        label: 'Social Support (2025)' },
-    { key: 'lifeExpectancy',       label: 'Life Expectancy (2025)' }, // TODO Mélangeant si même nom que lui en-bas???
+    { key: 'lifeExpectancy',       label: 'Life Expectancy (2025)' },
     { key: 'freedom',              label: 'Freedom (2025)' },
     { key: 'generosity',           label: 'Generosity (2025)' },
     { key: 'corruptionPerception', label: 'Corruption Perception (2025)' },

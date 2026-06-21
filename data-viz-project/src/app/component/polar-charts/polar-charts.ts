@@ -16,7 +16,6 @@ export class PolarCharts {
   private chartContainerBottom10 = viewChild<ElementRef>('polarChartContainerBottom10');
 
   constructor() {
-    // Ensure D3 only manipulates the DOM on the browser
     afterNextRender(() => {
       this.createChart(true);
       this.createChart(false);
