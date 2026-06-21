@@ -2,6 +2,15 @@ import { afterNextRender, Component, ElementRef, inject, viewChild } from '@angu
 import { DataManipulation } from '../../service/data-manipulation';
 import { HappinessRecord } from '../../common/records';
 import * as d3 from 'd3';
+import {
+  CORRUPTION_COLOR,
+  DYSTOPIA_COLOR,
+  FREEDOM_COLOR,
+  GDP_COLOR,
+  GENEROSITY_COLOR,
+  LIFE_EXPECTANCY_COLOR,
+  SOCIAL_SUPPORT_COLOR,
+} from '../../common/constants';
 
 @Component({
   selector: 'app-bar-charts',
@@ -28,13 +37,13 @@ export class BarCharts {
     label: string;
     color: string;
   }[] = [
-    { key: 'GDP', label: 'Log GDP per capita', color: '#d97b3d' },
-    { key: 'socialSupport', label: 'Social support', color: '#356b2f' },
-    { key: 'lifeExpectancy', label: 'Healthy life expectancy', color: '#5a9fd4' },
-    { key: 'freedom', label: 'Freedom to make life choices', color: '#9a3a9a' },
-    { key: 'generosity', label: 'Generosity', color: '#70a846' },
-    { key: 'corruptionPerception', label: 'Perceptions of corruption', color: '#315f7c' },
-    { key: 'dystopia', label: 'Dystopia + residual', color: '#7c3f1d' },
+    { key: 'GDP', label: 'Log GDP per capita', color: GDP_COLOR },
+    { key: 'socialSupport', label: 'Social support', color: SOCIAL_SUPPORT_COLOR },
+    { key: 'lifeExpectancy', label: 'Healthy life expectancy', color: LIFE_EXPECTANCY_COLOR },
+    { key: 'freedom', label: 'Freedom to make life choices', color: FREEDOM_COLOR },
+    { key: 'generosity', label: 'Generosity', color: GENEROSITY_COLOR },
+    { key: 'corruptionPerception', label: 'Perceptions of corruption', color: CORRUPTION_COLOR },
+    { key: 'dystopia', label: 'Dystopia + residual', color: DYSTOPIA_COLOR },
   ];
 
   constructor() {
@@ -53,10 +62,7 @@ export class BarCharts {
 
     d3.select(element).selectAll('*').remove();
 
-    const svg = d3
-      .select(element)
-      .attr('width', this.width)
-      .attr('height', this.height);
+    const svg = d3.select(element).attr('width', this.width).attr('height', this.height);
 
     const years = Array.from(new Set(this.records.map((d) => d.year))).sort();
 
@@ -67,9 +73,7 @@ export class BarCharts {
       const xPosition = col * this.chartWidth;
       const yPosition = row * this.chartHeight;
 
-      const g = svg
-        .append('g')
-        .attr('transform', `translate(${xPosition}, ${yPosition})`);
+      const g = svg.append('g').attr('transform', `translate(${xPosition}, ${yPosition})`);
 
       const data = years.map((year) => {
         const record = this.records.find((d) => d.year === year);
@@ -92,18 +96,12 @@ export class BarCharts {
         .domain([0, 3])
         .range([this.chartHeight - this.margin.bottom, this.margin.top]);
 
-
-
       g.append('text')
         .attr('class', 'chart-title')
         .attr('font-weight', 'bold')
         .attr('font-size', '14px')
         .text(factor.label)
-        .attr(
-          'x',
-          this.margin.left +
-            (this.chartWidth - this.margin.left - this.margin.right) / 2
-        )
+        .attr('x', this.margin.left + (this.chartWidth - this.margin.left - this.margin.right) / 2)
         .attr('y', 25)
         .attr('text-anchor', 'middle');
 
@@ -120,7 +118,8 @@ export class BarCharts {
         .attr('transform', `translate(${this.margin.left}, 0)`)
         .call(d3.axisLeft(yScale).ticks(6).tickFormat(d3.format('.3f')));
 
-      const bars = g.selectAll('.bar')
+      const bars = g
+        .selectAll('.bar')
         .data(data)
         .join('rect')
         .attr('class', 'bar')
@@ -131,7 +130,8 @@ export class BarCharts {
         .attr('fill', factor.color)
         .attr('data-color', factor.color);
 
-      const valueLabels = g.selectAll('.bar-value')
+      const valueLabels = g
+        .selectAll('.bar-value')
         .data(data)
         .join('text')
         .attr('class', 'bar-value')
@@ -148,22 +148,19 @@ export class BarCharts {
         .on('mouseover', function (event, d) {
           const originalColor = d3.select(this).attr('data-color');
 
-          d3.select(this)
-            .attr('fill', d3.color(originalColor)?.darker(0.8)?.toString() ?? originalColor);
+          d3.select(this).attr(
+            'fill',
+            d3.color(originalColor)?.darker(0.8)?.toString() ?? originalColor,
+          );
 
-          valueLabels
-            .filter((labelData) => labelData.year === d.year)
-            .attr('opacity', 1);
+          valueLabels.filter((labelData) => labelData.year === d.year).attr('opacity', 1);
         })
         .on('mouseout', function (event, d) {
           const originalColor = d3.select(this).attr('data-color');
 
-          d3.select(this)
-            .attr('fill', originalColor);
+          d3.select(this).attr('fill', originalColor);
 
-          valueLabels
-            .filter((labelData) => labelData.year === d.year)
-            .attr('opacity', 0);
+          valueLabels.filter((labelData) => labelData.year === d.year).attr('opacity', 0);
         });
 
       g.append('text')

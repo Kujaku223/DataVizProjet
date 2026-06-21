@@ -1,19 +1,41 @@
 // countries not in the country-locale-map's library database or for which the contient is not available
 export const COUNTRIES_CONTINENT: Record<string, string> = {
-    'Hong Kong SAR of China': 'Asia',
-    'Lao PDR': 'Asia',
-    'Somaliland Region': 'Asia',
-    'Taiwan Province of China': 'Asia',
-    'DR Congo': 'Africa',
-    'Türkiye': 'Europe', // and Asia...
-    "Côte d’Ivoire": 'Africa',
-    'North Cyprus': 'Asia',
-    'Swaziland': 'Africa',
-    'Syria': 'Asia',
+  'Hong Kong SAR of China': 'Asia',
+  'Lao PDR': 'Asia',
+  'Somaliland Region': 'Asia',
+  'Taiwan Province of China': 'Asia',
+  'DR Congo': 'Africa',
+  Türkiye: 'Europe', // and Asia...
+  'Côte d’Ivoire': 'Africa',
+  'North Cyprus': 'Asia',
+  Swaziland: 'Africa',
+  Syria: 'Asia',
 };
 
-export const TOP_10_COUNTRIES_2025: string[] = ['Finland', 'Iceland', 'Denmark', 'Costa Rica', 'Sweden', 'Norway', 'Netherlands', 'Israel', 'Luxembourg', 'Switzerland'];
-export const BOTTOM_10_COUNTRIES_2025: string[] = ['Tanzania', 'Egypt', 'DR Congo', 'Lebanon', 'Yemen', 'Botswana', 'Zimbabwe', 'Malawi', 'Sierra Leone', 'Afghanistan'];
+export const TOP_10_COUNTRIES_2025: string[] = [
+  'Finland',
+  'Iceland',
+  'Denmark',
+  'Costa Rica',
+  'Sweden',
+  'Norway',
+  'Netherlands',
+  'Israel',
+  'Luxembourg',
+  'Switzerland',
+];
+export const BOTTOM_10_COUNTRIES_2025: string[] = [
+  'Tanzania',
+  'Egypt',
+  'DR Congo',
+  'Lebanon',
+  'Yemen',
+  'Botswana',
+  'Zimbabwe',
+  'Malawi',
+  'Sierra Leone',
+  'Afghanistan',
+];
 export const CONTINENTS: string[] = ['Europe', 'Americas', 'Asia', 'Africa', 'Oceania'];
 
 // Happiness Line Chart
@@ -23,3 +45,11 @@ export const CANADA_COLOR = '#FF0000';
 export const TOP_10_COLOR = '#1874ed';
 export const BOTTOM_10_COLOR = '#FFA500';
 export const OTHER_COLOR = 'grey';
+
+export const GDP_COLOR = '#ed6a2c';
+export const SOCIAL_SUPPORT_COLOR = '#166b26';
+export const LIFE_EXPECTANCY_COLOR = '#18a1cd';
+export const FREEDOM_COLOR = '#a52a9c';
+export const GENEROSITY_COLOR = '#4daf2f';
+export const CORRUPTION_COLOR = '#0b3d52';
+export const DYSTOPIA_COLOR = '#a2430d';
